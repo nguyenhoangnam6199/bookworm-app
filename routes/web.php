@@ -14,22 +14,26 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('home');
+    return view('welcome');
 });
 
-Route::get('/shop', function () {
-    return view('shop');
-});
+// Route::get('/', function () {
+//     return view('home');
+// });
 
-Route::get('/about', function () {
-    return view('about');
-});
+// Route::get('/shop', function () {
+//     return view('shop');
+// });
 
-Route::get('/card', function () {
-    return view('card');
-});
+// Route::get('/about', function () {
+//     return view('about');
+// });
 
-Route::get('/detail', function () {
-    return view('detail');
-});
+// Route::get('/card', function () {
+//     return view('card');
+// });
+
+// Route::get('/detail', function () {
+//     return view('detail');
+// });
 
