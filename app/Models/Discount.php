@@ -10,9 +10,4 @@ class Discount extends Model
     use HasFactory;
 
     public $timestamps = false;
-
-    public function Book()
-    {
-        return $this->belongsTo(Book::class);
-    }
 }

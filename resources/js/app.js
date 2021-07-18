@@ -7,11 +7,11 @@ import "bootstrap/dist/css/bootstrap.css";
 import logo from "../assets/bookworm_icon.svg"
 
 import { BrowserRouter as Router, Switch, Route, Link, BrowserRouter } from "react-router-dom";
-import Home from "./components/Home";
 import About from "./components/About";
 import Cart from "./components/Cart";
 import Shop from "./components/Shop";
 import Product from "./components/Product";
+import HomePage from "./components/HomePage";
 
 
 function App() {
@@ -48,7 +48,7 @@ function App() {
             </header>
             <hr />
 
-            <Product />
+            <HomePage />
             {/* <Switch>
                 <Route exact path="/" component={Home} />
                 <Route exact path="/about" component={About} />
