@@ -10,6 +10,8 @@ import { BrowserRouter as Router, Switch, Route, Link, BrowserRouter } from "rea
 import Home from "./components/Home";
 import About from "./components/About";
 import Cart from "./components/Cart";
+import Shop from "./components/Shop";
+import Product from "./components/Product";
 
 
 function App() {
@@ -46,7 +48,7 @@ function App() {
             </header>
             <hr />
 
-            <Cart />
+            <Product />
             {/* <Switch>
                 <Route exact path="/" component={Home} />
                 <Route exact path="/about" component={About} />
