@@ -2,6 +2,36 @@ import React, { Component } from 'react';
 import logo from "../../assets/bookcover/book8.jpg";
 
 export default class Cart extends Component {
+    addFunction(){
+        var x = document.getElementById('number').value;
+        var rs = 0;
+        rs = parseInt(x) +1;
+        var kt = document.getElementById ( "test" ).innerText.slice(0);
+       // kt= parseFloat(kt);
+        console.log(kt);
+        var load = parseInt(rs)*parseFloat(kt)
+        console.log(load);
+        document.getElementById('number').value=rs;
+        document.getElementById('PriceTotal').innerHTML=load;
+        document.getElementById('cartTol').innerHTML=load;
+    }
+
+    minusFunction(){
+        var x = document.getElementById('number').value;
+        var rs = 0;
+        rs = parseInt(x) -1;
+        if(rs<0){
+            rs=0;
+        }
+        var kt = document.getElementById ( "test" ).innerText.slice(0);
+       // kt= parseFloat(kt);
+        console.log(kt);
+        var load = parseInt(rs)*parseFloat(kt)
+        console.log(load);
+        document.getElementById('number').value=rs;
+        document.getElementById('PriceTotal').innerHTML=load;
+        document.getElementById('cartTol').innerHTML=load;
+    }
     render() {
         return (
             <div>
@@ -36,23 +66,29 @@ export default class Cart extends Component {
                                                 </div>
                                             </div>
                                         </th>
-                                        <td>$17.57</td>
                                         <td>
-                                            <div className="input-group mb-3">
-                                                <div className="input-group-prepend">
-                                                    <button>
-                                                        <i className="fa fa-minus"></i>
-                                                    </button>
-                                                </div>
-                                                <input type="text" className="form-control" id="inputGroupFile01" value="1" style={{ textAlign: 'center' }} />
-                                                <div className="input-group-append">
-                                                    <button>
-                                                        <i className="fa fa-plus"></i>
-                                                    </button>
-                                                </div>
-                                            </div>
+                                            $<span id="test">17.57</span>
+                                           {/* <input type="text" id="Price" value="$17.57" readOnly/> */}
                                         </td>
-                                        <td>$17.57</td>
+                                        <td>
+                                        <div className="input-group mb-3">
+                                            <div className="input-group-prepend">
+                                                <button className="btn btn-outline-secondary" type="button" 
+                                                onClick={()=>this.minusFunction()}>
+                                                    -
+                                                </button>
+                                            </div>
+                                            <input type="text" id="number" className="form-control" value="1" style={{ textAlign: 'center' }} readOnly />
+                                            <div className="input-group-append">
+                                                <button className="btn btn-outline-secondary" type="button" onClick={()=>this.addFunction()}>
+                                                    +
+                                                </button>
+                                            </div>
+                                        </div>
+                                        </td>
+                                        <td>
+                                            $<span id="PriceTotal">17.57</span>
+                                        </td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -63,7 +99,7 @@ export default class Cart extends Component {
                                     Cart Totals
                                 </div>
                                 <div className="card-body">
-                                    <h5 className="card-title">$17.57</h5>
+                                    <h5 className="card-title">$<span id="cartTol">17.57</span></h5>
                                     <a href="#" className="btn btn-primary">Place Order</a>
                                 </div>
                             </div>

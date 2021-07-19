@@ -10,6 +10,7 @@ use Carbon\Carbon;
 
 class ShopController extends Controller
 {
+      //Lấy ra 1 sách với ID tương ứng
     function getBook($id){
         $book=Book::where('books.id',$id)
         ->select('books.*')
@@ -20,33 +21,7 @@ class ShopController extends Controller
         ->get();
         return response()->json($book);
     }
-    //Lấy ra 1 sách với ID tương ứng
-    function GetBookByID($id){
-        // $book = DB::table('books')
-        // ->leftJoin('discounts','books.id','=','discounts.book_id')
-        // ->join('authors','books.author_id','=','authors.id')
-        // ->select('books.id','books.book_title','authors.author_name','discounts.discount_price',
-        // DB::raw('CASE WHEN (discounts.discount_price isnull) THEN books.book_price ELSE discounts.discount_price end  as final_price'))
-        // ->where('books.id',$id)
-        // ->where(function($query) {
-        //     $query->whereDate('discount_start_date','<=', now()->toDateString())
-        //           ->whereDate('discount_end_date','>=', now()->toDateString());
-        // })
-        // ->orWhere(function($query){
-        //     $query->whereDate('discount_start_date','<=', now()->toDateString())
-        //           ->whereNull('discounts.discount_end_date');
-        // })
-        // ->limit(1)
-        // ->get();
-        $book=DB::table('books')
-        ->join('authors','books.author_id','=','authors.id')
-        ->leftJoin('discounts','books.id','=','discounts.book_id')
-        ->select('books.*','authors.author_name',DB::raw('CASE WHEN (discounts.discount_price isnull) THEN books.book_price ELSE discounts.discount_price end  as final_price'))
-        ->where('books.id',$id)
-        ->get();
-        return response()->json($book);
-    }
-
+    
     //Lọc theo 1 điều kiện tương ứng
     function FilterBy($condition,$sortAsc,$per,$page){
         if($condition==="sale"){
