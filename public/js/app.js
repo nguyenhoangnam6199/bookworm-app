@@ -2938,10 +2938,10 @@ var HomePage = /*#__PURE__*/function (_Component) {
                         style: {
                           marginRight: '15px'
                         },
-                        children: ["$", parseFloat(book.discount_price) + parseFloat(book.sub_price)]
+                        children: ["$", book.book_price]
                       }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)("span", {
                         className: "price",
-                        children: ["$", parseFloat(book.sub_price)]
+                        children: ["$", book.final_price]
                       })]
                     })]
                   })]
@@ -3529,70 +3529,39 @@ var Shop = /*#__PURE__*/function (_Component) {
                 }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("p", {
                   children: "        "
                 }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
-                  className: "col-md-2",
+                  className: "col-md-3",
                   style: {
-                    marginLeft: '142px'
+                    marginLeft: '200px'
                   },
-                  children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
-                    className: "dropdown",
-                    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("button", {
-                      className: "btn btn-secondary dropdown-toggle",
-                      type: "button",
-                      id: "dropdownMenuButton",
-                      "data-toggle": "dropdown",
-                      "aria-haspopup": "true",
-                      "aria-expanded": "false",
-                      children: "Sort By"
-                    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
-                      className: "dropdown-menu",
-                      "aria-labelledby": "dropdownMenuButton",
-                      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("a", {
-                        className: "dropdown-item",
-                        href: "#",
-                        children: "OnSale"
-                      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("a", {
-                        className: "dropdown-item",
-                        href: "#",
-                        children: "Popularity"
-                      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("a", {
-                        className: "dropdown-item",
-                        href: "#",
-                        children: "Price: low to high"
-                      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("a", {
-                        className: "dropdown-item",
-                        href: "#",
-                        children: "Price: hight to low"
-                      })]
+                  children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("select", {
+                    className: "custom-select",
+                    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("option", {
+                      value: "#",
+                      children: "Sort By OnSale"
+                    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("option", {
+                      value: "#",
+                      children: "Sort By Popularity"
+                    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("option", {
+                      value: "#",
+                      children: "Sort By Price: low to high"
+                    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("option", {
+                      value: "#",
+                      children: "Sort By Price: hight to low"
                     })]
                   })
                 }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
-                  className: "col-md-4",
-                  children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
-                    className: "dropdown",
-                    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("button", {
-                      className: "btn btn-secondary dropdown-toggle",
-                      type: "button",
-                      id: "dropdownMenuButton",
-                      "data-toggle": "dropdown",
-                      "aria-haspopup": "true",
-                      "aria-expanded": "false",
-                      children: "Show"
-                    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
-                      className: "dropdown-menu",
-                      "aria-labelledby": "dropdownMenuButton",
-                      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("a", {
-                        className: "dropdown-item",
-                        href: "#",
-                        children: "8"
-                      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("a", {
-                        className: "dropdown-item",
-                        href: "#",
-                        children: "12"
-                      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("a", {
-                        className: "dropdown-item",
-                        href: "#",
-                        children: "16"
-                      })]
+                  className: "col-md-2",
+                  children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("select", {
+                    className: "custom-select",
+                    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("option", {
+                      value: "#",
+                      children: "Show 8"
+                    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("option", {
+                      value: "#",
+                      children: "Show 12"
+                    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("option", {
+                      value: "#",
+                      children: "Show 16"
                     })]
                   })
                 })]

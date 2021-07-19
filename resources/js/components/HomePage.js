@@ -4,7 +4,7 @@ import axios from "axios"
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import {Link} from "react-router-dom";
+import { Link } from "react-router-dom";
 import Product from './Product';
 
 export default class HomePage extends Component {
@@ -61,19 +61,19 @@ export default class HomePage extends Component {
         return (
             <div className="container">
                 <h2>OnSale</h2>
-                <div className="border border-dark" style={{paddingLeft: '20px'}}>
-                    <br/>
+                <div className="border border-dark" style={{ paddingLeft: '20px' }}>
+                    <br />
                     <Slider {...settings}>
                         {this.state.onSale.map(book => (
                             <div key={book.id}>
-                                <div className="card" style={{ width: '13rem'}}>
-                                    <img className="card-img-top" src={'../../assets/bookcover/'+book.book_cover_photo+'.jpg'} alt="Card image cap" />
+                                <div className="card" style={{ width: '13rem' }}>
+                                    <img className="card-img-top" src={'../../assets/bookcover/' + book.book_cover_photo + '.jpg'} alt="Card image cap" />
                                     <div className="card-body">
                                         <h5 className="card-title">{book.book_title}</h5>
                                         <p className="card-text">{book.author_name}</p>
-                                        <Link to={"/book/"+book.id} className="btn btn-primary">
-                                            <del className="price-old" style={{ marginRight: '15px' }}>${parseFloat(book.discount_price) + parseFloat(book.sub_price)}</del>
-                                            <span className="price">${parseFloat(book.sub_price)}</span>
+                                        <Link to={"/book/" + book.id} className="btn btn-primary">
+                                            <del className="price-old" style={{ marginRight: '15px' }}>${book.book_price}</del>
+                                            <span className="price">${book.final_price}</span>
                                         </Link>
                                     </div>
                                 </div>
@@ -89,11 +89,11 @@ export default class HomePage extends Component {
                         <div key={book.id} className="col-md-3">
                             <div className="item-slide p-2">
                                 <div className="card" style={{ width: '13rem' }}>
-                                    <img className="card-img-top" src={'../../assets/bookcover/'+book.book_cover_photo+'.jpg'} alt="Card image cap" />
+                                    <img className="card-img-top" src={'../../assets/bookcover/' + book.book_cover_photo + '.jpg'} alt="Card image cap" />
                                     <div className="card-body">
                                         <h5 className="card-title">{book.book_title}</h5>
                                         <p className="card-text">{book.author_name}</p>
-                                        <Link to={"/book/"+book.id} className="btn btn-primary">
+                                        <Link to={"/book/" + book.id} className="btn btn-primary">
                                             <span className="price">${parseFloat(book.final_price)}</span>
                                         </Link>
                                     </div>
@@ -110,11 +110,11 @@ export default class HomePage extends Component {
                         <div key={book.id} className="col-md-3">
                             <div className="item-slide p-2">
                                 <div className="card" style={{ width: '13rem' }}>
-                                    <img className="card-img-top" src={'../../assets/bookcover/'+book.book_cover_photo+'.jpg'} alt="Card image cap" />
+                                    <img className="card-img-top" src={'../../assets/bookcover/' + book.book_cover_photo + '.jpg'} alt="Card image cap" />
                                     <div className="card-body">
                                         <h5 className="card-title">{book.book_title}</h5>
                                         <p className="card-text">{book.author_name}</p>
-                                        <Link to={"/book/"+book.id} className="btn btn-primary">
+                                        <Link to={"/book/" + book.id} className="btn btn-primary">
                                             <span className="price">${parseFloat(book.final_price)}</span>
                                         </Link>
                                     </div>

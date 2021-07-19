@@ -58,30 +58,20 @@ export default class Shop extends Component {
                                     <p>Showing 1-12 of 126 books</p>
                                 </div>
                                 <p>        </p>
-                                <div className="col-md-2" style={{ marginLeft: '142px' }}>
-                                    <div className="dropdown">
-                                        <button className="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                            Sort By
-                                        </button>
-                                        <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                            <a className="dropdown-item" href="#">OnSale</a>
-                                            <a className="dropdown-item" href="#">Popularity</a>
-                                            <a className="dropdown-item" href="#">Price: low to high</a>
-                                            <a className="dropdown-item" href="#">Price: hight to low</a>
-                                        </div>
-                                    </div>
+                                <div className="col-md-3" style={{ marginLeft: '200px' }}>
+                                    <select className="custom-select">
+                                        <option value ="#">Sort By OnSale</option>
+                                        <option value="#">Sort By Popularity</option>
+                                        <option value="#">Sort By Price: low to high</option>
+                                        <option value="#">Sort By Price: hight to low</option>
+                                    </select>
                                 </div>
-                                <div className="col-md-4" >
-                                    <div className="dropdown">
-                                        <button className="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                            Show
-                                        </button>
-                                        <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                            <a className="dropdown-item" href="#">8</a>
-                                            <a className="dropdown-item" href="#">12</a>
-                                            <a className="dropdown-item" href="#">16</a>
-                                        </div>
-                                    </div>
+                                <div className="col-md-2" >
+                                <select className="custom-select">
+                                        <option value ="#">Show 8</option>
+                                        <option value="#">Show 12</option>
+                                        <option value="#">Show 16</option>
+                                    </select>
                                 </div>
                             </div>
                             <br />

@@ -32,6 +32,30 @@ class Book extends Model
         return $this->hasMany(Discount::class);
     }
 
+    public function scopeSelectSubPrice($query)
+    {
+        return $query
+            ->whereHas('discounts',function($query){
+                $query->validDate();
+            })
+            ->addSelect([
+                'sub_price' => Discount::select(DB::raw('books.book_price - discount_price'))
+                    ->whereColumn('book_id', 'books.id')
+            ]);
+    }
+    public function scopeSelectAverageStar($query){
+        return $query->addSelect([
+            'star'=>Review::averageStar()
+                ->whereColumn('book_id','books.id')
+        ]);
+    }
+    public function scopeSelectCountComment($query){
+        return $query->addSelect([
+            'comment'=>Review::countComment()
+                ->whereColumn('book_id','books.id')
+        ]);
+    }
+
     public function scopeSelectFinalPrice($query)
     {
         return $query->selectRaw('CASE WHEN (discounts.discount_price isnull) THEN books.book_price ELSE discounts.discount_price end  as final_price')
