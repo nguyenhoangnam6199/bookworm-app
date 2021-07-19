@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\ShopController;
 
 /*
 |--------------------------------------------------------------------------
@@ -24,3 +25,7 @@ Route::get('/onSaleBook',[HomeController::class,'OnSaleBook']);
 Route::get('/recommandBook',[HomeController::class,'RecommendedBook']);
 
 Route::get('/popularBook',[HomeController::class,'PopularBook']);
+
+Route::get('/book/{id}',[ShopController::class,'getBook']);
+
+Route::get('filter/{condition}/{sortAsc}/{per}/{page}',[ShopController::class],'FilterBy');

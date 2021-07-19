@@ -31,5 +31,14 @@
         "react-slick": "^0.28.1",
         "slick-carousel": "^1.8.1",
         "sweetalert2": "^11.0.18"
+    },
+    "babel": {
+        "presets": [
+            "@babel/preset-env",
+            "@babel/preset-react"
+        ],
+        "plugins": [
+            "@babel/plugin-proposal-class-properties"
+        ]
     }
 }

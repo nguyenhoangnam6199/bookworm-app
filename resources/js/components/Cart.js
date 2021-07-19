@@ -41,13 +41,13 @@ export default class Cart extends Component {
                                             <div className="input-group mb-3">
                                                 <div className="input-group-prepend">
                                                     <button>
-                                                        <i class="fa fa-minus"></i>
+                                                        <i className="fa fa-minus"></i>
                                                     </button>
                                                 </div>
                                                 <input type="text" className="form-control" id="inputGroupFile01" value="1" style={{ textAlign: 'center' }} />
                                                 <div className="input-group-append">
                                                     <button>
-                                                        <i class="fa fa-plus"></i>
+                                                        <i className="fa fa-plus"></i>
                                                     </button>
                                                 </div>
                                             </div>

@@ -1,9 +1,35 @@
 import React, { Component } from 'react'
-import logo from "../../assets/bookcover/book8.jpg";
+import axios from "axios";
+
 export default class Product extends Component {
+    constructor(props) {
+        super(props)
+        this.state = {
+            book:{}
+        };
+    }
+
+    componentDidMount() {
+        console.log(this.props.match.params.id)
+    }
+
+    componentWillMount() {
+        axios.get('http://127.0.0.1:8000/api/book/'+this.props.match.params.id)
+            .then(res => {
+                this.setState({
+                    book: res.data
+                });
+                console.log(this.state.book);
+            })
+            .catch((error) => {
+                console.log(error);
+            });
+    }
+
     render() {
         return (
             <div>
+                {`${this.state.book.book_title}`}
                 <section className="section-pagetop bg-primary">
                     <div className="container">
                         <h2 className="title-page text-white">Product Detail</h2>
@@ -14,10 +40,10 @@ export default class Product extends Component {
                     <div className="row">
                         <div className="col-md-8 border border-dark">
                             <div className="media">
-                                <img className="align-self-start mr-3" src={logo} alt="logo" style={{ width: '20%', marginTop: '10px' }} />
+                                <img className="align-self-start mr-3" src={'../../assets/bookcover/'+this.state.book.book_cover_photo+'.jpg'} alt="logo" style={{ width: '20%', marginTop: '10px' }} />
                                 <div className="media-body">
-                                    <h5 className="mt-0">Book Title</h5>
-                                    <p>Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin. Cras purus odio, vestibulum in vulputate at, tempus viverra turpis. Fusce condimentum nunc ac nisi vulputate fringilla. Donec lacinia congue felis in faucibus.</p>
+                                    <h5 className="mt-0"></h5>
+                                    <p></p>
                                     <p>Donec sed odio dui. Nullam quis risus eget urna mollis ornare vel eu leo. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.</p>
                                 </div>
                             </div>
@@ -35,7 +61,7 @@ export default class Product extends Component {
                                         <div className="input-group-prepend">
                                             <button className="btn btn-outline-secondary" type="button">-</button>
                                         </div>
-                                        <input type="text" className="form-control" value={1} style={{ textAlign: 'center' }} />
+                                        <input type="text" className="form-control" value="1" style={{ textAlign: 'center' }} />
                                         <div className="input-group-append">
                                             <button className="btn btn-outline-secondary" type="button">+</button>
                                         </div>
@@ -67,11 +93,11 @@ export default class Product extends Component {
                                         <label className="my-1 mr-2" htmlFor="inlineFormCustomSelectPref">Select a rating star</label>
                                         <select className="custom-select my-1 mr-sm-2" id="inlineFormCustomSelectPref">
                                             <option selected>Choose...</option>
-                                            <option value={1}>1 Star</option>
-                                            <option value={2}>2 Star</option>
-                                            <option value={3}>3 Star</option>
-                                            <option value={4}>4 Star</option>
-                                            <option value={5}>5 Star</option>
+                                            <option value="1">1 Star</option>
+                                            <option value="2">2 Star</option>
+                                            <option value="3">3 Star</option>
+                                            <option value="4">4 Star</option>
+                                            <option value="5">5 Star</option>
                                         </select>
                                     </div>
 

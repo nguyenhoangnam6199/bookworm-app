@@ -15,7 +15,7 @@ class HomeController extends Controller
     function OnSaleBook(){
         $b = DB::table('books')->join('discounts','books.id','=','discounts.book_id')
             ->join('authors','books.author_id','=','authors.id')
-            ->select('books.id','books.book_title','authors.author_name','discounts.discount_price',DB::raw('books.book_price - discounts.discount_price as sub_price'))
+            ->select('books.id','books.book_cover_photo','books.book_title','authors.author_name','discounts.discount_price',DB::raw('books.book_price - discounts.discount_price as sub_price'))
             ->where(function($query) {
                 $query->whereDate('discount_start_date','<=', now()->toDateString())
                       ->whereDate('discount_end_date','>=', now()->toDateString());
@@ -29,7 +29,6 @@ class HomeController extends Controller
             ->get();
 
         return response()->json($b);
-        ;
     }
 
     //Danh sách 8 cuốn Recommended
@@ -38,7 +37,7 @@ class HomeController extends Controller
         ->join('reviews', 'books.id','=','reviews.book_id')
         ->join('authors', 'books.author_id','=','authors.id')
         ->leftJoin('discounts','books.id','=','discounts.book_id')
-        ->select('books.id','books.book_title','authors.author_name',
+        ->select('books.id','books.book_cover_photo','books.book_title','authors.author_name',
         DB::raw('sum(cast(reviews.rating_start as integer))/count(*) as avg_rating'),
         DB::raw('CASE WHEN (discounts.discount_price isnull) THEN books.book_price ELSE discounts.discount_price end  as final_price'))
         ->where(function($query) {
@@ -65,7 +64,7 @@ class HomeController extends Controller
         ->join('reviews', 'books.id','=','reviews.book_id')
         ->join('authors', 'books.author_id','=','authors.id')
         ->leftJoin('discounts','books.id','=','discounts.book_id')
-        ->select('books.id','books.book_title','authors.author_name',
+        ->select('books.id','books.book_cover_photo','books.book_title','authors.author_name',
         DB::raw('CASE WHEN (discounts.discount_price isnull) THEN books.book_price ELSE discounts.discount_price end  as final_price'),
         DB::raw('count(books.id) as num_review'))
         ->where(function($query) {
@@ -84,125 +83,5 @@ class HomeController extends Controller
         ->limit(8)
         ->get();
         return response()->json($book);
-    }
-
-    //Chưa Test
-    function filterByCategory($category,$sort,$per,$page,$isAsc){
-        if($sort==="sale"){
-            $books=Book::selectSubPrice()
-            ->orderByDesc('sub_price')
-            ->limit($per)
-            ->offset(($page-1)*$per)
-            ->join('categories','books.category_id','=','categories.id')
-            ->where('category_id',$category)
-            ->with('author')
-            ->get();
-            return response()->json($books);
-        }
-        else if($sort==="popular"){
-            $books=Book::select('books.id','authors.author_name')
-            ->join('reviews', 'books.id','=','reviews.book_id')
-            ->join('authors', 'books.author_id','=','authors.id')
-            ->selectCountComment()
-            ->orderByDesc('comment')
-            ->selectFinalPrice()
-            ->orderBy('final_price')
-            ->groupBy('final_price')
-            ->groupBy('books.id')
-            ->groupBy('authors.author_name')
-            ->join('categories','books.category_id','=','categories.id')
-            ->where('category_id',$category)
-            ->limit($per)
-            ->offset(($page-1)*$per)
-            ->get();
-            return response()->json($books);
-        }
-        else if($sort==="price"){
-            $books=Book::select('books.id','authors.author_name','books.author_id')
-            ->selectFinalPrice()
-            ->join('authors', 'books.author_id','=','authors.id')
-            ->groupBy('final_price')
-            ->groupBy('books.id')
-            ->groupBy('authors.author_name')
-            ->groupBy('authors.id')
-            ->join('categories','books.category_id','=','categories.id')
-            ->where('category_id',$category)
-            ->limit($per)
-            ->offset(($page-1)*$per)
-            ->with('author');
-            if($isAsc==="true"){
-                $books=$books->orderBy('final_price');
-            }else{
-                $books=$books->orderByDesc('final_price');
-            }
-            $books=$books->get();
-            return response()->json($books);
-        }
-    }
-    function filterByAuthor($author,$sort,$per,$page,$isAsc){
-        if($sort==="sale"){
-            $books=Book::selectSubPrice()
-            ->orderByDesc('sub_price')
-            ->limit($per)
-            ->offset(($page-1)*$per)
-            ->join('authors','books.author_id','=','authors.id')
-            ->where('author_id',$author)
-            ->with('author')
-            ->get();
-            return response()->json($books);
-        }
-        else if($sort==="popular"){
-            $books=Book::select('books.id','authors.author_name')
-            ->join('reviews', 'books.id','=','reviews.book_id')
-            ->join('authors', 'books.author_id','=','authors.id')
-            ->selectCountComment()
-            ->orderByDesc('comment')
-            ->selectFinalPrice()
-            ->orderBy('final_price')
-            ->groupBy('final_price')
-            ->groupBy('books.id')
-            ->groupBy('authors.author_name')
-            ->where('author_id',$author)
-            ->limit($per)
-            ->offset(($page-1)*$per)
-            ->get();
-            return response()->json($books);
-        }
-        else if($sort==="price"){
-            $books=Book::select('books.id','authors.author_name','books.author_id')
-            ->selectFinalPrice()
-            ->join('authors', 'books.author_id','=','authors.id')
-            ->groupBy('final_price')
-            ->groupBy('books.id')
-            ->groupBy('authors.author_name')
-            ->groupBy('authors.id')
-            ->where('author_id',$author)
-            ->limit($per)
-            ->offset(($page-1)*$per)
-            ->with('author');
-            if($isAsc==="true"){
-                $books=$books->orderBy('final_price');
-            }else{
-                $books=$books->orderByDesc('final_price');
-            }
-            $books=$books->get();
-            return response()->json($books);
-        }
-    }
-    //
-    function sortByDiscount($per,$page,$isAsc){
-        $books=Book::selectSubPrice()
-        ->limit($per)
-        ->offset(($page-1)*$per)
-        ->with('author');
-        if($isAsc){
-            $books=$books->orderBy('sub_price');
-        }else{
-            $books=$books->orderByDesc('sub_price');
-        }
-        $books=$books->get();
-        return response()->json($books);
-    }
-
-    
+    } 
 }

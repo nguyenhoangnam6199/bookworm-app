@@ -10,31 +10,49 @@ use Carbon\Carbon;
 
 class ShopController extends Controller
 {
+    function getBook($id){
+        $book=Book::where('books.id',$id)
+        ->select('books.*')
+        ->with('author')
+        ->with('category')
+        ->with('reviews')
+        ->selectFinalPrice()
+        ->get();
+        return response()->json($book);
+    }
     //Lấy ra 1 sách với ID tương ứng
     function GetBookByID($id){
-        $book = DB::table('books')
-        ->leftJoin('discounts','books.id','=','discounts.book_id')
+        // $book = DB::table('books')
+        // ->leftJoin('discounts','books.id','=','discounts.book_id')
+        // ->join('authors','books.author_id','=','authors.id')
+        // ->select('books.id','books.book_title','authors.author_name','discounts.discount_price',
+        // DB::raw('CASE WHEN (discounts.discount_price isnull) THEN books.book_price ELSE discounts.discount_price end  as final_price'))
+        // ->where('books.id',$id)
+        // ->where(function($query) {
+        //     $query->whereDate('discount_start_date','<=', now()->toDateString())
+        //           ->whereDate('discount_end_date','>=', now()->toDateString());
+        // })
+        // ->orWhere(function($query){
+        //     $query->whereDate('discount_start_date','<=', now()->toDateString())
+        //           ->whereNull('discounts.discount_end_date');
+        // })
+        // ->limit(1)
+        // ->get();
+        $book=DB::table('books')
         ->join('authors','books.author_id','=','authors.id')
-        ->select('books.id','books.book_title','authors.author_name','discounts.discount_price')
+        ->leftJoin('discounts','books.id','=','discounts.book_id')
+        ->select('books.*','authors.author_name',DB::raw('CASE WHEN (discounts.discount_price isnull) THEN books.book_price ELSE discounts.discount_price end  as final_price'))
         ->where('books.id',$id)
-        ->where(function($query) {
-            $query->whereDate('discount_start_date','<=', now()->toDateString())
-                  ->whereDate('discount_end_date','>=', now()->toDateString());
-        })
-        ->orWhere(function($query){
-            $query->whereDate('discount_start_date','<=', now()->toDateString())
-                  ->whereNull('discounts.discount_end_date');
-        })
         ->get();
         return response()->json($book);
     }
 
-    //Lọc theo 1 loại
-    function FilterByCategory($condition,$category, $per, $page, $isAccending){
+    //Lọc theo 1 điều kiện tương ứng
+    function FilterBy($condition,$sortAsc,$per,$page){
         if($condition==="sale"){
             $b = DB::table('books')->join('discounts','books.id','=','discounts.book_id')
             ->join('authors','books.author_id','=','authors.id')
-            ->select('books.id','books.book_title','authors.author_name','discounts.discount_price',DB::raw('book_price - discount_price as sub_price'))
+            ->select('books.id','books.book_cover_photo','books.book_title','authors.author_name','discounts.discount_price',DB::raw('books.book_price - discounts.discount_price as sub_price'))
             ->where(function($query) {
                 $query->whereDate('discount_start_date','<=', now()->toDateString())
                       ->whereDate('discount_end_date','>=', now()->toDateString());
@@ -48,13 +66,16 @@ class ShopController extends Controller
             ->offset(($page-1)*$per)
             ->get();
 
-            return response()->json($b);
+             return response()->json($b);
         }
         else if($condition==="popular"){
-            $b4 = DB::table('books')
-            ->join('reviews','books.id','=','reviews.book_id')
+            $book =  DB::table('books')
+            ->join('reviews', 'books.id','=','reviews.book_id')
+            ->join('authors', 'books.author_id','=','authors.id')
             ->leftJoin('discounts','books.id','=','discounts.book_id')
-            ->select('books.id','discounts.discount_price',DB::raw('count(books.id) as num_review'))
+            ->select('books.id','books.book_cover_photo','books.book_title','authors.author_name',
+            DB::raw('CASE WHEN (discounts.discount_price isnull) THEN books.book_price ELSE discounts.discount_price end  as final_price'),
+            DB::raw('count(books.id) as num_review'))
             ->where(function($query) {
                 $query->whereDate('discount_start_date','<=', now()->toDateString())
                     ->whereDate('discount_end_date','>=', now()->toDateString());
@@ -63,54 +84,38 @@ class ShopController extends Controller
                 $query->whereDate('discount_start_date','<=', now()->toDateString())
                     ->whereNull('discounts.discount_end_date');
             })
-            ->groupBy('books.id','discounts.discount_price')
+            ->groupBy('final_price')
+            ->groupBy('books.id')
+            ->groupBy('authors.author_name')
             ->orderByDesc('num_review')
-            ->orderBy('discounts.discount_price','asc')
+            ->orderBy('final_price')
             ->limit($per)
             ->offset(($page-1)*$per)
             ->get();
-            return response()->json($b4);
-        }
-        else if($condition==="recommend"){
-            $b4 = DB::table('books')
-            ->join('reviews','books.id','=','reviews.book_id')
-            ->leftJoin('discounts','books.id','=','discounts.book_id')
-            ->select('books.id','discounts.discount_price',DB::raw('sum(cast(reviews.rating_start as integer))/count(*) as avg_rating'))
-            ->where(function($query) {
-                $query->whereDate('discount_start_date','<=', now()->toDateString())
-                    ->whereDate('discount_end_date','>=', now()->toDateString());
-            })
-            ->orWhere(function($query){
-                $query->whereDate('discount_start_date','<=', now()->toDateString())
-                    ->whereNull('discounts.discount_end_date');
-            })
-            ->groupBy('books.id','discounts.discount_price')
-            ->orderByDesc('avg_rating')
-            ->orderBy('discounts.discount_price','asc')
-            ->limit($per)
-            ->offset(($page-1)*$per)
-            ->get();
-            return response()->json($b4);
-        
+            return response()->json($book);
         }
         else if($condition==="price"){
-            $b =Book::select('books.id','authors.author_name','books.author_id')
-            ->FinalPrice()
+            $book = DB::table('books')
             ->join('authors', 'books.author_id','=','authors.id')
-            ->groupBy('final_price','books.id','authors.author_name','authors.id')
-            ->join('categories','books.category_id','=','categories.id')
-            ->where('category_id',$category)
-            ->limit($per)
-            ->offset(($page-1)*$per)
-            ->with('author');
-            if($isAccending==="true"){
-                $b=$b->orderBy('final_price');
-            }else{
-                $b=$b->orderByDesc('final_price');
+            ->leftJoin('discounts','books.id','=','discounts.book_id')
+            ->select('books.id','books.book_cover_photo','books.book_title','authors.author_name',
+            DB::raw('CASE WHEN (discounts.discount_price isnull) THEN books.book_price ELSE discounts.discount_price end  as final_price'))
+            ->groupBy('books.id');
+            if($sortAsc==="true"){
+                $book=$book->orderBy('final_price')
+                ->limit($per)
+                ->offset(($page-1)*$per)
+                ->get();
             }
-            $b=$b->get();
-            return response()->json($b);
+            else{
+                $book=$book->orderByDesc('final_price')
+                ->limit($per)
+                ->offset(($page-1)*$per)
+                ->get();
+            }
+            return response()->json($book);
         }
     }
+    
 
 }
