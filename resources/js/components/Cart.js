@@ -9,11 +9,11 @@ export default class Cart extends Component {
         var kt = document.getElementById ( "test" ).innerText.slice(0);
        // kt= parseFloat(kt);
         console.log(kt);
-        var load = parseInt(rs)*parseFloat(kt)
+        var load = parseFloat(rs)*parseFloat(kt)
         console.log(load);
-        document.getElementById('number').value=rs;
-        document.getElementById('PriceTotal').innerHTML=load;
-        document.getElementById('cartTol').innerHTML=load;
+        document.getElementById('number').value=parseInt(rs);
+        document.getElementById('PriceTotal').innerHTML=load.toFixed(2);
+        document.getElementById('cartTol').innerHTML=load.toFixed(2);
     }
 
     minusFunction(){
@@ -26,11 +26,11 @@ export default class Cart extends Component {
         var kt = document.getElementById ( "test" ).innerText.slice(0);
        // kt= parseFloat(kt);
         console.log(kt);
-        var load = parseInt(rs)*parseFloat(kt)
+        var load = parseFloat(rs)*parseFloat(kt)
         console.log(load);
-        document.getElementById('number').value=rs;
-        document.getElementById('PriceTotal').innerHTML=load;
-        document.getElementById('cartTol').innerHTML=load;
+        document.getElementById('number').value=parseInt(rs);
+        document.getElementById('PriceTotal').innerHTML=load.toFixed(2);
+        document.getElementById('cartTol').innerHTML=load.toFixed(2);
     }
     render() {
         return (

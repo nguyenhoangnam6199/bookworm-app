@@ -28,8 +28,16 @@ Route::get('/popularBook',[HomeController::class,'PopularBook']);
 
 Route::get('/book/{id}',[ShopController::class,'getBook']);
 
-Route::get('/filterbyCategory/{condition}/{id}/{per}/{page}/{isAsc}',[ShopController::class,'FilterBy']);
+Route::get('/filterby',[ShopController::class,'FilterBy']);
 
-Route::get('/filterbyAuthor/{condition}/{id}/{per}/{page}/{isAsc}',[ShopController::class,'filterbyAuthor']);
+//Route::get('/filterby1/{lo}/{condition}/{id}/{per}/{isAsc}',[ShopController::class,'FilterBy1']);
+
+// Route::get('/filterbyAuthor/{condition}/{id}/{per}/{page}/{isAsc}',[ShopController::class,'filterbyAuthor']);
+
+Route::get('/category',[ShopController::class,'getCategory']);
+
+Route::get('/author',[ShopController::class,'getAuthor']);
+
+Route::get('/test/{id}',[ShopController::class,'index']);
 
 

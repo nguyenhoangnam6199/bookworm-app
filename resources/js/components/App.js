@@ -37,6 +37,8 @@ function App() {
                 </Route>
                 <Route path="/book/:id" component={Product}>
                 </Route>
+                {/* <Route path="/book/:id" component={Product}>
+                </Route> */}
                 <br />
                 <Footer />
             </Router>
