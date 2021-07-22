@@ -16,6 +16,7 @@ import About from "./About";
 import Shop from "./Shop";
 import Cart from "./Cart";
 import Product from "./Product";
+import ProductDetail from "./ProductDetail";
 
 function App() {
     return (
@@ -35,7 +36,7 @@ function App() {
                 <Route path="/cart" >
                     <Cart />
                 </Route>
-                <Route path="/book/:id" component={Product}>
+                <Route path="/book/:id" component={ProductDetail}>
                 </Route>
                 {/* <Route path="/book/:id" component={Product}>
                 </Route> */}

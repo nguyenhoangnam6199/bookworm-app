@@ -40,4 +40,10 @@ Route::get('/author',[ShopController::class,'getAuthor']);
 
 Route::get('/test/{id}',[ShopController::class,'index']);
 
+Route::get('/getStar/{id}',[ShopController::class,'countStart']);
+
+Route::get('/getSumStar/{id}',[ShopController::class,'sumStar']);
+
+Route::get('/filterReview/{idBook}/{idStar}/{condition}/{isAsc}/{per}',[ShopController::class,'FilterReview']);
+
 

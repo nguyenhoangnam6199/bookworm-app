@@ -68,10 +68,41 @@ class ShopController extends Controller
             ->with('category')
             ->with('reviews')
             ->selectFinalPrice()
+            ->SelectAverageStar()
             ->get();
         return response()->json($book);
     }
 
+    //Đếm số lượng từng star ứng với sản phẩm có id tương ứng
+    function countStart($id)
+    {
+        $b = DB::table('books')
+            ->join('reviews', 'books.id', '=', 'reviews.book_id')
+            ->select(
+                'books.id',
+                'reviews.rating_start',
+                DB::raw('count(cast(reviews.rating_start as int)) as sl')
+            )
+            ->where('books.id', $id)
+            ->groupBy('books.id', 'reviews.rating_start')
+            ->get();
+        return response()->json($b);
+    }
+
+    //Đếm tổng số lượng star của 1 sản phẩm có id tương ứng
+    function sumStar($id)
+    {
+        $b = DB::table('books')
+            ->join('reviews', 'books.id', '=', 'reviews.book_id')
+            ->select(
+                'books.id',
+                DB::raw('sum(cast(reviews.rating_start as int)) as SumOfStar')
+            )
+            ->where('books.id', $id)
+            ->groupBy('books.id')
+            ->get();
+        return response()->json($b);
+    }
 
     //Lọc theo 1 category
     function FilterBy(Request $request)
@@ -240,7 +271,7 @@ class ShopController extends Controller
                     ->paginate($per);
                 return response()->json($book);
             } else if ($condition === "price") {
-                $books = Book::select('books.id','books.book_price', 'authors.author_name', 'books.author_id', 'books.book_cover_photo', 'books.book_title')
+                $books = Book::select('books.id', 'books.book_price', 'authors.author_name', 'books.author_id', 'books.book_cover_photo', 'books.book_title')
                     ->selectFinalPrice()
                     ->join('authors', 'books.author_id', '=', 'authors.id')
                     ->groupBy('final_price')
@@ -277,7 +308,8 @@ class ShopController extends Controller
                         'books.book_price',
                         'authors.author_name',
                         DB::raw('CAST(AVG(CAST (reviews.rating_start AS INT)) as INT) as star'),
-                        DB::raw('CASE WHEN (discounts.discount_price isnull) THEN books.book_price ELSE discounts.discount_price end  as final_price',
+                        DB::raw(
+                            'CASE WHEN (discounts.discount_price isnull) THEN books.book_price ELSE discounts.discount_price end  as final_price',
                         )
                     )
                     ->where(function ($q) {
@@ -290,8 +322,8 @@ class ShopController extends Controller
                                     ->whereNull('discounts.discount_end_date');
                             });
                     })
-                    ->havingRaw('cast(avg(CAST (reviews.rating_start AS INT)) as int) = ?',[$category])
-                    ->groupBy('books.id','categories.category_name','authors.author_name','discounts.discount_price')
+                    ->havingRaw('cast(avg(CAST (reviews.rating_start AS INT)) as int) = ?', [$category])
+                    ->groupBy('books.id', 'categories.category_name', 'authors.author_name', 'discounts.discount_price')
                     // ->limit($per)
                     // ->offset(($page - 1) * $per)
                     // ->get();
@@ -323,7 +355,7 @@ class ShopController extends Controller
                                     ->whereNull('discounts.discount_end_date');
                             });
                     })
-                    ->havingRaw('cast(avg(CAST (reviews.rating_start AS INT)) as int) = ?',[$category])
+                    ->havingRaw('cast(avg(CAST (reviews.rating_start AS INT)) as int) = ?', [$category])
                     ->groupBy('final_price')
                     ->groupBy('books.id')
                     ->groupBy('authors.author_name')
@@ -336,11 +368,16 @@ class ShopController extends Controller
                 return response()->json($book);
             } else if ($condition === "price") {
                 $books = Book::select(
-                    'books.id', 'books.book_title', 'authors.author_name', 
-                    'books.author_id', 'books.book_cover_photo', 'books.book_price',
-                    DB::raw('CAST(AVG(CAST (reviews.rating_start AS INT)) as INT) as star'))
+                    'books.id',
+                    'books.book_title',
+                    'authors.author_name',
+                    'books.author_id',
+                    'books.book_cover_photo',
+                    'books.book_price',
+                    DB::raw('CAST(AVG(CAST (reviews.rating_start AS INT)) as INT) as star')
+                )
                     ->selectFinalPrice()
-                    ->havingRaw('cast(avg(CAST (reviews.rating_start AS INT)) as int) = ?',[$category])
+                    ->havingRaw('cast(avg(CAST (reviews.rating_start AS INT)) as int) = ?', [$category])
                     ->join('authors', 'books.author_id', '=', 'authors.id')
                     ->join('reviews', 'books.id', '=', 'reviews.book_id')
                     ->groupBy('final_price')
@@ -362,6 +399,71 @@ class ShopController extends Controller
         }
     }
 
+
+    //Lọc review theo 1 star nào đó
+    function FilterReview($idBook, $idStar, $condition,$isAscending, $per)
+    {
+        if ($condition === "sale") {
+            $b = DB::table('books')
+                ->join('discounts', 'books.id', '=', 'discounts.book_id')
+                ->join('reviews', 'books.id', '=', 'reviews.book_id')
+                ->select(
+                    'reviews.id',
+                    'reviews.review_title',
+                    'reviews.review_details',
+                    'reviews.review_date'
+                )
+                ->where('books.id', $idBook)
+                ->where(function ($q) {
+                    $q->where(function ($k) {
+                        $k->whereDate('discount_start_date', '<=', now()->toDateString())
+                            ->whereDate('discount_end_date', '>=', now()->toDateString());
+                    })
+                        ->orwhere(function ($k) {
+                            $k->whereDate('discount_start_date', '<=', now()->toDateString())
+                                ->whereNull('discounts.discount_end_date');
+                        });
+                })
+                ->havingRaw('cast(reviews.rating_start as int) = ?', [$idStar])
+                ->groupBy(
+                    'reviews.id',
+                    'reviews.review_title',
+                    'reviews.review_details',
+                    'reviews.review_date',
+                    'reviews.rating_start'
+                )
+                ->paginate($per);
+            return response()->json($b);
+        }
+        else if($condition==="time"){
+            $b = DB::table('books')
+                ->join('reviews', 'books.id', '=', 'reviews.book_id')
+                ->select(
+                    'reviews.id',
+                    'reviews.review_title',
+                    'reviews.review_details',
+                    'reviews.review_date'
+                )
+                ->where('books.id', $idBook)
+                ->havingRaw('cast(reviews.rating_start as int) = ?', [$idStar])
+                ->groupBy(
+                    'reviews.id',
+                    'reviews.review_title',
+                    'reviews.review_details',
+                    'reviews.review_date',
+                    'reviews.rating_start'
+                );
+
+                if($isAscending==="true"){
+                    $b=$b->orderBy('reviews.review_date')->paginate($per);
+                }
+                else{
+                    $b=$b->orderByDesc('reviews.review_date')->paginate($per);
+                }
+                // ->paginate($per);
+            return response()->json($b);
+        }
+    }
 
     //Lọc theo 1 category
     function FilterBy1($loai, $condition, $category, $per, $isAscending)
