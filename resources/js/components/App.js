@@ -17,33 +17,36 @@ import Shop from "./Shop";
 import Cart from "./Cart";
 import Product from "./Product";
 import ProductDetail from "./ProductDetail";
+import {store, persistor} from "../store";
+import {PersistGate} from "redux-persist/integration/react";
+import {Provider} from "react-redux";
 
 function App() {
     return (
-        <>
-            <Router>
-                <Header />
-                <br />
-                <Route exact path="/" >
-                    <HomePage />
-                </Route>
-                <Route path="/about" >
-                    <About />
-                </Route>
-                <Route path="/shop" >
-                    <Shop />
-                </Route>
-                <Route path="/cart" >
-                    <Cart />
-                </Route>
-                <Route path="/book/:id" component={ProductDetail}>
-                </Route>
-                {/* <Route path="/book/:id" component={Product}>
-                </Route> */}
-                <br />
-                <Footer />
-            </Router>
-        </>
+        <Provider store={store}>
+            <PersistGate loading={null} persistor={persistor}>
+                <Router>
+                    <Header />
+                    <br />
+                    <Route exact path="/" >
+                        <HomePage />
+                    </Route>
+                    <Route path="/about" >
+                        <About />
+                    </Route>
+                    <Route path="/shop" >
+                        <Shop />
+                    </Route>
+                    <Route path="/cart" >
+                        <Cart />
+                    </Route>
+                    <Route path="/book/:id" component={ProductDetail}>
+                    </Route>
+                    <br />
+                    <Footer />
+                </Router>
+            </PersistGate>
+        </Provider>
     );
 }
 

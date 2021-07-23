@@ -69,7 +69,39 @@ class ShopController extends Controller
             ->with('reviews')
             ->selectFinalPrice()
             ->SelectAverageStar()
-            ->get();
+            ->first(); //collection = array
+            // $book = DB::table('books')
+            // ->leftJoin('discounts', 'books.id', '=', 'discounts.book_id')
+            //         ->join('authors', 'books.author_id', '=', 'authors.id')
+            //         ->join('categories', 'books.category_id', '=', 'categories.id')
+            //         ->join('reviews', 'books.id', '=', 'reviews.book_id')
+            //         ->select(
+            //             'books.id',
+            //             'books.book_cover_photo',
+            //             'categories.category_name',
+            //             'books.book_title',
+            //             'books.book_price',
+            //             'authors.author_name',
+            //             'books.book_summary',
+            //             DB::raw('sum(cast(reviews.rating_start as int)) as SumOfStar'),
+            //             DB::raw('CAST(AVG(CAST (reviews.rating_start AS INT)) as INT) as star'),
+            //             DB::raw(
+            //                 'CASE WHEN (discounts.discount_price isnull) THEN books.book_price ELSE discounts.discount_price end  as final_price',
+            //             )
+            //         )
+            //         ->where('books.id',$id)
+            //         ->where(function ($q) {
+            //             $q->where(function ($k) {
+            //                 $k->whereDate('discount_start_date', '<=', now()->toDateString())
+            //                     ->whereDate('discount_end_date', '>=', now()->toDateString());
+            //             })
+            //                 ->orwhere(function ($k) {
+            //                     $k->whereDate('discount_start_date', '<=', now()->toDateString())
+            //                         ->whereNull('discounts.discount_end_date');
+            //                 });
+            //         })
+            //         ->groupBy('books.id', 'categories.category_name', 'authors.author_name', 'discounts.discount_price')
+            //         ->first();
         return response()->json($book);
     }
 
@@ -82,6 +114,7 @@ class ShopController extends Controller
                 'books.id',
                 'reviews.rating_start',
                 DB::raw('count(cast(reviews.rating_start as int)) as sl')
+                
             )
             ->where('books.id', $id)
             ->groupBy('books.id', 'reviews.rating_start')
@@ -100,7 +133,7 @@ class ShopController extends Controller
             )
             ->where('books.id', $id)
             ->groupBy('books.id')
-            ->get();
+            ->first();
         return response()->json($b);
     }
 
@@ -117,7 +150,7 @@ class ShopController extends Controller
         if ($loai === "1") {
             if ($condition === "sale") {
                 $b = DB::table('books')
-                    ->join('discounts', 'books.id', '=', 'discounts.book_id')
+                    ->leftJoin('discounts', 'books.id', '=', 'discounts.book_id')
                     ->join('authors', 'books.author_id', '=', 'authors.id')
                     ->join('categories', 'books.category_id', '=', 'categories.id')
                     ->select(
@@ -205,7 +238,7 @@ class ShopController extends Controller
         else if ($loai === "2") {
             if ($condition === "sale") {
                 $b = DB::table('books')
-                    ->join('discounts', 'books.id', '=', 'discounts.book_id')
+                    ->leftJoin('discounts', 'books.id', '=', 'discounts.book_id')
                     ->join('authors', 'books.author_id', '=', 'authors.id')
                     ->join('categories', 'books.category_id', '=', 'categories.id')
                     ->select(
@@ -296,7 +329,7 @@ class ShopController extends Controller
         else if ($loai === "3") {
             if ($condition === 'sale') {
                 $b = DB::table('books')
-                    ->join('discounts', 'books.id', '=', 'discounts.book_id')
+                    ->leftJoin('discounts', 'books.id', '=', 'discounts.book_id')
                     ->join('authors', 'books.author_id', '=', 'authors.id')
                     ->join('categories', 'books.category_id', '=', 'categories.id')
                     ->join('reviews', 'books.id', '=', 'reviews.book_id')
@@ -405,7 +438,7 @@ class ShopController extends Controller
     {
         if ($condition === "sale") {
             $b = DB::table('books')
-                ->join('discounts', 'books.id', '=', 'discounts.book_id')
+                ->leftJoin('discounts', 'books.id', '=', 'discounts.book_id')
                 ->join('reviews', 'books.id', '=', 'reviews.book_id')
                 ->select(
                     'reviews.id',

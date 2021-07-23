@@ -4,11 +4,14 @@ import {
     Routes,
     Switch,
     Route,
+    NavLink,
     Link
-  } from "react-router-dom";
-import {Container, Nav, Navbar} from "react-bootstrap";
+} from "react-router-dom";
+import { Container, Nav, Navbar } from "react-bootstrap";
 import logo from "../../assets/bookworm_icon.svg";
-export default class Header extends Component {
+import { connect } from 'react-redux';
+
+export class Header extends Component {
     render() {
         return (
             <header className="App-header">
@@ -22,18 +25,30 @@ export default class Header extends Component {
 
                         <Nav className="justify-content-end">
                             <Nav>
-                                <Link to={"/"} className="nav-link">
+                                <NavLink exact id="1" to={"/"} className="nav-link" activeStyle={{
+                                    fontWeight: "bold",
+                                    color: "black"
+                                }} >
                                     Home
-                                </Link>
-                                <Link to={"/shop"} className="nav-link">
+                                </NavLink>
+                                <NavLink id="2" to={"/shop"} className="nav-link" activeStyle={{
+                                    fontWeight: "bold",
+                                    color: "black"
+                                }}>
                                     Shop
-                                </Link>
-                                <Link to={"/about"} className="nav-link">
+                                </NavLink>
+                                <NavLink id="3" to={"/about"} className="nav-link" activeStyle={{
+                                    fontWeight: "bold",
+                                    color: "black"
+                                }}>
                                     About
-                                </Link>
-                                <Link to={"/cart"} className="nav-link">
-                                    Cart (0)
-                                </Link>
+                                </NavLink>
+                                <NavLink id="4" to={"/cart"} className="nav-link" activeStyle={{
+                                    fontWeight: "bold",
+                                    color: "black"
+                                }}>
+                                    Cart ({this.props.numberCart})
+                                </NavLink>
                             </Nav>
                         </Nav>
 
@@ -43,3 +58,11 @@ export default class Header extends Component {
         )
     }
 }
+
+const mapStateToProps = state => {
+    return {
+        numberCart: state._cartReducers.numberCart
+    }
+}
+
+export default connect(mapStateToProps, null)(Header)

@@ -41,22 +41,6 @@ export default class Shop extends Component {
 
 
     componentWillMount() {
-        // axios.get('http://127.0.0.1:8000/api/filterby1/1/sale/2/2/false')
-        //     .then(res => {
-        //         this.setState({
-        //             listpro1: res.data.data,
-        //             listpro2: res.data.links,
-        //             from: res.data.from,
-        //             to: res.data.last_page
-        //         });
-        //         console.log(this.state.listpro1);
-        //         console.log(this.state.listpro2);
-        //         console.log(this.state.from);
-        //         console.log(this.state.to);
-        //     })
-        //     .catch((error) => {
-        //         console.log(error);
-        //     });
         axios.get('http://127.0.0.1:8000/api/category')
             .then(res => {
                 this.setState({
@@ -206,12 +190,13 @@ export default class Shop extends Component {
         const from1 = this.state.from;
         return (
             <div>
-                {/* <section className="section-pagetop bg-primary">
+                <section className="section-pagetop">
                     <div className="container">
-                        <h2 className="title-page text-white">Filter</h2>
+                        <h2 className="title-page">Book ( Filter by {this.state.mode})</h2>
                     </div>
-                </section> */}
-                <hr />
+                    <hr/>
+                </section>
+                
                 <br />
                 <div className="container">
                     <div className="row">
@@ -227,7 +212,7 @@ export default class Shop extends Component {
                                     <div id="collapseOne" className="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
                                         {this.state.category.map(cate => (
                                             <div className="accordion-body" key={cate.id} value={cate.id} id={cate.id} onClick={() => this.FuntionCate(cate.id)}>
-                                                {cate.category_name}
+                                                {cate.category_name.toUpperCase()}
                                             </div>
                                         ))}
 
@@ -243,7 +228,7 @@ export default class Shop extends Component {
 
                                         {this.state.author.map(auth => (
                                             <div key={auth.id} className="accordion-body" value={auth.id} id={auth.id} onClick={() => this.FunctionAuth(auth.id)}>
-                                                {auth.author_name}
+                                                {auth.author_name.toUpperCase()}
                                             </div>
                                         ))}
 
@@ -259,7 +244,7 @@ export default class Shop extends Component {
 
                                         {this.state.star.map(st => (
                                             <div key={st.id} className="accordion-body" value={st.id} id={st.id} onClick={() => this.FuncStar(st.id)}>
-                                                {st.des}
+                                                {st.des.toUpperCase()}
                                             </div>
                                         ))}
 
@@ -267,10 +252,10 @@ export default class Shop extends Component {
                                 </div>
                             </div>
                         </div>
-                        <div className="col-8" style={{ marginLeft: '10px' }}>
+                        <div className="col-10">
                             <div className="row">
                                 <p>      </p>
-                                <div className="col-md-5" style={{ marginLeft: '200px' }}>
+                                <div className="col-md-4" style={{ marginLeft: '420px' }}>
                                     <select id="sortch" className="custom-select" onChange={() => this.FunctionBy()}>
                                         <option value="sale">Sort By OnSale</option>
                                         <option value="popular">Sort By Popularity</option>
@@ -278,7 +263,7 @@ export default class Shop extends Component {
                                         <option value="price2">Sort By Price: hight to low</option>
                                     </select>
                                 </div>
-                                <div className="col-md-3" >
+                                <div className="col-md-2" >
                                     <select id="numch" className="custom-select" onChange={() => this.FunctionBy1()}>
                                         <option value="5">Show 5</option>
                                         <option value="10">Show 10</option>
@@ -290,20 +275,19 @@ export default class Shop extends Component {
                             {/* Contents */}
                             <div className="row">
                                 {this.state.listpro.map(book => (
-                                    <div className="col-md-4">
+                                    <div className="col-3">
                                         <Link key={book.id} to={"/book/" + book.id}>
-                                            <div className="card" style={{ marginRight: '10px' }} >
-                                                {/* {
-                                                    (book.book_cover_photo)
-                                                        ? <img style={{ maxHeight: '200px' }} className="card-img-top" src={logo} alt={book.book_title + " photo"} />
+                                            <div className="card" style={{ minHeight: '200px', marginRight: '10px' }} >
+                                                {
+                                                    (book.book_cover_photo==null)
+                                                        ? <img style={{ minHeight: '200px' }} className="card-img-top" src={logo} alt={book.book_title + " photo"} />
                                                         : <img style={{ maxHeight: '200px' }} className="card-img-top" src={"images/" + book.book_cover_photo + ".jpg"} alt={book.book_title + " photo"} />
-                                                } */}
-                                                <img style={{ maxHeight: '200px' }} className="card-img-top" src={"images/" + book.book_cover_photo + ".jpg"} alt={book.book_title + " photo"} />
-                                                <div className="card-body" style={{ maxHeight: '120px' }}>
+                                                }
+                                                <div className="card-body">
                                                     <h5 className="card-title" style={{ wordWrap: 'break-word', display: 'block', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                                                         {book.book_title}
                                                     </h5>
-                                                    <p className="card-text" style={{ maxHeight: '40px' }}>{book.author_name}</p>
+                                                    <p className="card-text" style={{minHeight: '70px'}}>{book.author_name}</p>
                                                 </div>
                                                 <ul className="list-group list-group-flush">
                                                     <li className="list-group-item">
@@ -321,22 +305,6 @@ export default class Shop extends Component {
                                 ))}
                             </div>
                             <br />
-                            {/* Pagination */}
-                            {/* <div className="row">
-                                <nav aria-label="Page navigation example" style={{ marginLeft: '320px' }}>
-                                    <ul className="pagination">
-                                        {
-                                            this.state.listpro2.map(lst => (
-                                                <li key={lst.url} className="page-item">
-                                                    <a id={lst.url} className="page-link" onClick={()=>this.LoadApi(lst.url)}>
-                                                       {lst.label}
-                                                    </a>
-                                                </li>
-                                            ))
-                                        }
-                                    </ul>
-                                </nav>
-                            </div> */}
                             <Paginate
                                 className="text-center"
                                 page_count={to1}
