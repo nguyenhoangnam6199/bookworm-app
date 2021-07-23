@@ -10,19 +10,31 @@ export class ProductDetail extends Component {
         this.state = {
             id: '1',
             per: '5',
-            condition: 'sale',
+            condition: 'time',
             isAsc: 'false',
-            star: '1',
+            star: '5',
             book: {},
             numOfStar: [],
             sumStar: {},
             review: [],
             page: '1',
             to: '',
-            quantity: 1
+            quantity: 1,
+            title:'',
+            detail:'',
+            stars:''
         }
         this.setPage = this.setPage.bind(this);
-    }
+        this.Funct1 = this.Funct1.bind(this);
+        this.Funct2 = this.Funct2.bind(this);
+        this.Funct3 = this.Funct3.bind(this);
+        this.onSubmit = this.onSubmit.bind(this);   
+        this.FetchData = this.FetchData.bind(this);
+        this.FetchData1 = this.FetchData1.bind(this);
+        this.Func1= this.Func1.bind(this);
+        this.Func2 = this.Func2.bind(this);
+        this.FuncStar = this.FuncStar.bind(this);
+     }
     componentDidMount() {
         console.log(this.props.match.params.id)
     }
@@ -32,7 +44,7 @@ export class ProductDetail extends Component {
         this.FetchData();
     }
     async FetchData1() {
-        await axios.get('http://127.0.0.1:8000/api/book/' + this.props.match.params.id)
+        await axios.get('/api/book/' + this.props.match.params.id)
             .then(res => {
                 this.setState({
                     book: res.data
@@ -42,7 +54,7 @@ export class ProductDetail extends Component {
             .catch((error) => {
                 console.log(error);
             });
-        await axios.get('http://127.0.0.1:8000/api/getStar/' + this.props.match.params.id)
+        await axios.get('/api/getStar/' + this.props.match.params.id)
             .then(res => {
                 this.setState({
                     numOfStar: res.data
@@ -52,7 +64,7 @@ export class ProductDetail extends Component {
             .catch((error) => {
                 console.log(error);
             });
-        await axios.get('http://127.0.0.1:8000/api/getSumStar/' + this.props.match.params.id)
+        await axios.get('/api/getSumStar/' + this.props.match.params.id)
             .then(res => {
                 this.setState({
                     sumStar: res.data
@@ -65,7 +77,7 @@ export class ProductDetail extends Component {
     }
 
     async FetchData() {
-       await axios.get('http://127.0.0.1:8000/api/filterReview/' + this.props.match.params.id + "/" + this.state.star + "/" +
+       await axios.get('/api/filterReview/' + this.props.match.params.id + "/" + this.state.star + "/" +
             this.state.condition + "/" + this.state.isAsc + "/" + this.state.per + "?page=" + this.state.page)
             .then(res => {
                 this.setState({
@@ -101,9 +113,6 @@ export class ProductDetail extends Component {
             await this.setState(
                 { isAsc: 'true' }
             )
-        }
-        else {
-            x = "sale";
         }
         await this.setState(
             { condition: x }
@@ -146,6 +155,44 @@ export class ProductDetail extends Component {
         this.setState({ quantity: 1 })
     }
 
+    Funct1(e){
+        this.setState(
+            {
+                title:e.target.value
+            }
+        )
+    }
+
+    Funct2(e){
+        this.setState(
+            {
+                detail:e.target.value
+            }
+        )
+    }
+
+    Funct3(e){
+        this.setState(
+            {
+                stars:e.target.value
+            }
+        )
+    }
+
+    onSubmit(e){
+        e.preventDefault();
+        console.log(this)
+        const x = {
+            book_id:this.props.match.params.id,
+            review_title:this.state.title,
+            review_details: this.state.detail,
+            rating_start:this.state.stars
+        };
+        axios.post("/api/review/",x)
+        .then(res=>console.log(res.data));
+        this.FetchData1(),
+        this.FetchData();
+    }
     render() {
         return (
             <div className="container">
@@ -213,7 +260,7 @@ export class ProductDetail extends Component {
                                 <h5>Customer Reviews (Filter by {this.state.star} star)</h5>
                                 <br />
 
-                                <h5>{parseFloat(this.state.book.star)} Star</h5>
+                                <h5>{parseFloat(this.state.book.star).toFixed(2)} Star</h5>
 
                                 {/* <h5>0 Star</h5> */}
                                 <p>total (
@@ -230,7 +277,7 @@ export class ProductDetail extends Component {
                                     <p style={{ float: 'left' }}></p>
                                     <div className='col-8' style={{ float: 'right' }}>
                                         <select id="sortText" className="custom-select" style={{ float: 'left', width: '60%' }} onClick={() => this.Func1()}>
-                                            <option value="sale">Sort by on sale</option>
+                                            {/* <option value="sale">Sort by on sale</option> */}
                                             <option value="time1">Sort by date: newest to oldest</option>
                                             <option value="time2">Sort by date: oldest to newest</option>
                                         </select>
@@ -269,18 +316,18 @@ export class ProductDetail extends Component {
                         <hr style={{ margin: 'auto' }} />
                         <br />
                         <br />
-                        <form>
+                        <form onSubmit={this.onSubmit}>
                             <div className="form-group">
                                 <label htmlFor="exampleFormControlInput1">Add a title</label>
-                                <input type="text" className="form-control" id="exampleFormControlInput1" placeholder="Add a Title" />
+                                <input type="text" value={this.state.title} onChange={this.Funct1} className="form-control" id="exampleFormControlInput1" placeholder="Add a Title" />
                             </div>
                             <div className="form-group">
                                 <label htmlFor="exampleFormControlInput1">Detail please! Your review helps other shoppers</label>
-                                <input type="text" className="form-control" id="exampleFormControlInput1" placeholder="Add a content" />
+                                <input type="text" value={this.state.detail} onChange={this.Funct2} className="form-control" id="exampleFormControlInput1" placeholder="Add a content" />
                             </div>
                             <div className="form-group">
                                 <label htmlFor="exampleFormControlSelect1">Select a rating star</label>
-                                <select className="form-control" id="exampleFormControlSelect1">
+                                <select value={this.state.stars} onChange={this.Funct3} className="form-control" id="exampleFormControlSelect1">
                                     <option>1</option>
                                     <option>2</option>
                                     <option>3</option>
@@ -288,9 +335,11 @@ export class ProductDetail extends Component {
                                     <option>5</option>
                                 </select>
                             </div>
+                            <hr />
+                            <button style={{ marginLeft: '55px' }} type="submit" className="btn btn-secondary">Submit Review</button>
                         </form>
-                        <hr />
-                        <button style={{ marginLeft: '55px' }} type="button" className="btn btn-secondary">Submit Review</button>
+                        
+                        
                     </div>
                 </div>
             </div>

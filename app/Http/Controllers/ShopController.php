@@ -436,39 +436,39 @@ class ShopController extends Controller
     //Lọc review theo 1 star nào đó
     function FilterReview($idBook, $idStar, $condition,$isAscending, $per)
     {
-        if ($condition === "sale") {
-            $b = DB::table('books')
-                ->leftJoin('discounts', 'books.id', '=', 'discounts.book_id')
-                ->join('reviews', 'books.id', '=', 'reviews.book_id')
-                ->select(
-                    'reviews.id',
-                    'reviews.review_title',
-                    'reviews.review_details',
-                    'reviews.review_date'
-                )
-                ->where('books.id', $idBook)
-                ->where(function ($q) {
-                    $q->where(function ($k) {
-                        $k->whereDate('discount_start_date', '<=', now()->toDateString())
-                            ->whereDate('discount_end_date', '>=', now()->toDateString());
-                    })
-                        ->orwhere(function ($k) {
-                            $k->whereDate('discount_start_date', '<=', now()->toDateString())
-                                ->whereNull('discounts.discount_end_date');
-                        });
-                })
-                ->havingRaw('cast(reviews.rating_start as int) = ?', [$idStar])
-                ->groupBy(
-                    'reviews.id',
-                    'reviews.review_title',
-                    'reviews.review_details',
-                    'reviews.review_date',
-                    'reviews.rating_start'
-                )
-                ->paginate($per);
-            return response()->json($b);
-        }
-        else if($condition==="time"){
+        // if ($condition === "sale") {
+        //     $b = DB::table('books')
+        //         ->leftJoin('discounts', 'books.id', '=', 'discounts.book_id')
+        //         ->join('reviews', 'books.id', '=', 'reviews.book_id')
+        //         ->select(
+        //             'reviews.id',
+        //             'reviews.review_title',
+        //             'reviews.review_details',
+        //             'reviews.review_date'
+        //         )
+        //         ->where('books.id', $idBook)
+        //         ->where(function ($q) {
+        //             $q->where(function ($k) {
+        //                 $k->whereDate('discount_start_date', '<=', now()->toDateString())
+        //                     ->whereDate('discount_end_date', '>=', now()->toDateString());
+        //             })
+        //                 ->orwhere(function ($k) {
+        //                     $k->whereDate('discount_start_date', '<=', now()->toDateString())
+        //                         ->whereNull('discounts.discount_end_date');
+        //                 });
+        //         })
+        //         ->havingRaw('cast(reviews.rating_start as int) = ?', [$idStar])
+        //         ->groupBy(
+        //             'reviews.id',
+        //             'reviews.review_title',
+        //             'reviews.review_details',
+        //             'reviews.review_date',
+        //             'reviews.rating_start'
+        //         )
+        //         ->paginate($per);
+        //     return response()->json($b);
+        // }
+        if($condition==="time"){
             $b = DB::table('books')
                 ->join('reviews', 'books.id', '=', 'reviews.book_id')
                 ->select(

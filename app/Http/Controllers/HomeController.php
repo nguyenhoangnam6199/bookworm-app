@@ -13,7 +13,7 @@ class HomeController extends Controller
 {
     //Danh sách 10 sách khuyến mãi nhiều nhất
     function OnSaleBook(){
-        $b = DB::table('books')->join('discounts','books.id','=','discounts.book_id')
+        $b = DB::table('books')->leftJoin('discounts','books.id','=','discounts.book_id')
             ->join('authors','books.author_id','=','authors.id')
             ->select('books.id','books.book_cover_photo','books.book_title','books.book_price','authors.author_name','discounts.discount_price',
             DB::raw('books.book_price - discounts.discount_price as sub_price'),

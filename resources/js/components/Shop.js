@@ -190,11 +190,10 @@ export default class Shop extends Component {
         const from1 = this.state.from;
         return (
             <div>
-                <section className="section-pagetop">
+                <section className="section-pagetop bg-primary">
                     <div className="container">
-                        <h2 className="title-page">Book ( Filter by {this.state.mode})</h2>
+                        <h2 className="title-page text-white">Book ( Filter by {this.state.mode})</h2>
                     </div>
-                    <hr/>
                 </section>
                 
                 <br />
@@ -255,7 +254,7 @@ export default class Shop extends Component {
                         <div className="col-10">
                             <div className="row">
                                 <p>      </p>
-                                <div className="col-md-4" style={{ marginLeft: '420px' }}>
+                                <div className="col-md-3" style={{ marginLeft: '550px' }}>
                                     <select id="sortch" className="custom-select" onChange={() => this.FunctionBy()}>
                                         <option value="sale">Sort By OnSale</option>
                                         <option value="popular">Sort By Popularity</option>

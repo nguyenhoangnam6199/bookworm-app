@@ -3,6 +3,8 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\PlaceOrderController;
+use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\ShopController;
 
 /*
@@ -46,4 +48,6 @@ Route::get('/getSumStar/{id}',[ShopController::class,'sumStar']);
 
 Route::get('/filterReview/{idBook}/{idStar}/{condition}/{isAsc}/{per}',[ShopController::class,'FilterReview']);
 
+Route::apiResource('orders', PlaceOrderController::class)->only('store');
 
+Route::post('/review',[ReviewController::class,'store']);

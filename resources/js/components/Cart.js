@@ -1,43 +1,21 @@
 import React, { Component } from 'react';
-import logo from "../../assets/bookcover/book8.jpg";
+import logo from "../../assets/404.jpg";
 import { connect } from 'react-redux';
 import { DecreaseQuantity, IncreaseQuantity, EmptyCart } from "../store/actions";
 import EmptyCartNoti from './EmptyCartNoti';
+import axios from "axios"
 
 export class Cart extends Component {
-    addFunction() {
-        var x = document.getElementById('number').value;
-        var rs = 0;
-        rs = parseInt(x) + 1;
-        var kt = document.getElementById("test").innerText.slice(0);
-        // kt= parseFloat(kt);
-        console.log(kt);
-        var load = parseFloat(rs) * parseFloat(kt)
-        console.log(load);
-        document.getElementById('number').value = parseInt(rs);
-        document.getElementById('PriceTotal').innerHTML = load.toFixed(2);
-        document.getElementById('cartTol').innerHTML = load.toFixed(2);
-    }
 
-    minusFunction() {
-        var x = document.getElementById('number').value;
-        var rs = 0;
-        rs = parseInt(x) - 1;
-        if (rs < 0) {
-            rs = 0;
+    constructor(props){
+        super(props)
+        this.state={
+            ketthuc:'false'
         }
-        var kt = document.getElementById("test").innerText.slice(0);
-        // kt= parseFloat(kt);
-        console.log(kt);
-        var load = parseFloat(rs) * parseFloat(kt)
-        console.log(load);
-        document.getElementById('number').value = parseInt(rs);
-        document.getElementById('PriceTotal').innerHTML = load.toFixed(2);
-        document.getElementById('cartTol').innerHTML = load.toFixed(2);
     }
 
     calculatePrice(price, quantity) {
-        return (price * quantity);
+        return Math.round((price * quantity)*100)/100;
     }
 
     calculateCart() {
@@ -51,6 +29,20 @@ export class Cart extends Component {
         return TotalCart;
     }
 
+    Order(){
+        if(this.props.cart.length===0) return;
+        let params = {
+            cart:this.props.cart
+        }
+        axios.post("/api/orders",params).then(
+            (res)=>{
+                this.props.EmptyCartNoti()
+                this.setState(
+                    {ketthuc:'true'}
+                )
+            }
+        )
+    }
 
     render() {
         return (
@@ -80,7 +72,12 @@ export class Cart extends Component {
                                             <tr key={item.product.id}>
                                                 <th scope="row">
                                                     <div className="media">
-                                                        <img className="mr-3" src={"images/" + item.product.book_cover_photo + ".jpg"} alt="logo" style={{ width: '30%' }} />
+                                                        {
+                                                        (item.product.book_cover_photo===null)
+                                                        ? <img className="mr-3" src={logo} alt="logo" style={{ width: '30%',minHeight:'200px' }} />
+                                                        : <img className="mr-3" src={"images/" + item.product.book_cover_photo + ".jpg"} alt="logo" style={{ width: '30%' }} />
+                                                        }
+                                                       
                                                         <br />
                                                         <div className="media-body">
                                                             <br />
@@ -119,7 +116,11 @@ export class Cart extends Component {
                                     </div>
                                     <div className="card-body">
                                         <h5 className="card-title">$<span id="cartTol">{this.calculateCart()}</span></h5>
-                                        <button className="btn btn-primary">Place Order</button>
+                                        <button className="btn btn-primary"
+                                        onClick={()=>this.Order()}
+                                        >
+                                            Place Order
+                                        </button>
                                     </div>
                                 </div>
                             </div>
