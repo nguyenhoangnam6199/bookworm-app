@@ -13,7 +13,7 @@ class Order extends Model
     
     protected $fillable = ['order_date', 'order_amount'];
 
-    public function items()
+    public function order_items()
     {
         return $this->hasMany(OrderItem::class);
     }

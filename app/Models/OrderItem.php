@@ -10,7 +10,7 @@ class OrderItem extends Model
     use HasFactory;
 
     public $timestamps = false;
-    
+
     protected $fillable = ['book_id', 'quantity', 'order_id', 'price'];
 
     public function order()

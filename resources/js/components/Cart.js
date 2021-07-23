@@ -4,14 +4,18 @@ import { connect } from 'react-redux';
 import { DecreaseQuantity, IncreaseQuantity, EmptyCart } from "../store/actions";
 import EmptyCartNoti from './EmptyCartNoti';
 import axios from "axios"
+import CartResult from './CartResult';
 
 export class Cart extends Component {
 
     constructor(props){
         super(props)
         this.state={
-            ketthuc:'false'
+            placedOrder: false
         }
+        this.Order=this.Order.bind(this);
+        this.calculateCart=this.calculateCart.bind(this);
+        this.calculatePrice=this.calculatePrice.bind(this);
     }
 
     calculatePrice(price, quantity) {
@@ -29,22 +33,23 @@ export class Cart extends Component {
         return TotalCart;
     }
 
-    Order(){
-        if(this.props.cart.length===0) return;
+    async Order(){
         let params = {
             cart:this.props.cart
         }
-        axios.post("/api/orders",params).then(
+
+       await axios.post("/api/orders",params).then(
             (res)=>{
-                this.props.EmptyCartNoti()
-                this.setState(
-                    {ketthuc:'true'}
-                )
+                console.log(res.data);
+                this.setState({placedOrder: true})
             }
         )
     }
 
     render() {
+        if(this.state.placedOrder) {
+            return <CartResult />
+        }
         return (
             <div>
                 <section className="section-pagetop bg-primary">

@@ -9,112 +9,45 @@ use Illuminate\Support\Facades\DB;
 
 class PlaceOrderController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
-    {
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-
-
-     public function __construct(Book $book, Order $order)
-     {
-        $this->book = $book;
-        $this->order=$order;
-     }
+   
     public function store(Request $request)
     {
-        $idBook = $request->input('cart.*.product.id');
-        $quantity=$request->input('cart.*.quantity');
-        $b = $this->book->whereIn('id', $idBook)->get();
-        $order = DB::transaction(function () use ($b, $quantity) {
-            $order = $this->orderModel->create([
-                'order_date'   => now(),
-                'order_amount' => 0,
-            ]);
+        $input_id = $request->input("cart.*.product.id");
+        $input_quantity = $request->input("cart.*.quantity");
 
-            $order_items = [];
-            $order_amount = 0;
-            for ($i = 0; $i < count($b); $i++) {
-                $order_items[] = [
-                    'book_id'  => $b[$i]->id,
-                    'price'    => $b[$i]->final_price,
-                    'quantity' => $quantity[$i],
+        $books = Book::whereIn('books.id', $input_id)
+        ->leftJoin('discounts', 'books.id', '=', 'discounts.book_id')
+        ->select(
+            'books.id',
+            'books.book_cover_photo',
+            'books.book_title',
+            'books.book_price',
+            DB::raw('CASE WHEN (discounts.discount_price is null) THEN books.book_price ELSE discounts.discount_price end  as final_price'),
+        )->get();
+
+        $order = DB::transaction(function () use ($books, $input_quantity) {
+            $total = 0;
+            foreach ($books as $i => $book) {
+                $order_books[] = [
+                    'book_id' => $book->id,
+                    'price' => $book->final_price,
+                    'quantity' => $input_quantity[$i]
                 ];
-                $order_amount += ($b[$i]->final_price * $b[$i]);
+                $total += ($book->final_price * $input_quantity[$i]);
+                //$total += ($book['price'] * $book['quantity']);
             }
-
-            $order->items()->createMany($order_items);
-            $order->update(['order_amount' => $order_amount]);
+            $order = Order::create([
+                'order_date' => now(),
+                'order_amount' => $total
+            ]);
+            $order->order_items()->createMany($order_books);
 
             return $order;
         });
-
+        
         return response($order, 201);
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
-    }
+ 
+    
 }
