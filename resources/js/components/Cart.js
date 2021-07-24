@@ -4,22 +4,23 @@ import { connect } from 'react-redux';
 import { DecreaseQuantity, IncreaseQuantity, EmptyCart } from "../store/actions";
 import EmptyCartNoti from './EmptyCartNoti';
 import axios from "axios"
+import { Link } from "react-router-dom";
 import CartResult from './CartResult';
 
 export class Cart extends Component {
 
-    constructor(props){
+    constructor(props) {
         super(props)
-        this.state={
+        this.state = {
             placedOrder: false
         }
-        this.Order=this.Order.bind(this);
-        this.calculateCart=this.calculateCart.bind(this);
-        this.calculatePrice=this.calculatePrice.bind(this);
+        this.Order = this.Order.bind(this);
+        this.calculateCart = this.calculateCart.bind(this);
+        this.calculatePrice = this.calculatePrice.bind(this);
     }
 
     calculatePrice(price, quantity) {
-        return Math.round((price * quantity)*100)/100;
+        return Math.round((price * quantity) * 100) / 100;
     }
 
     calculateCart() {
@@ -33,21 +34,21 @@ export class Cart extends Component {
         return TotalCart;
     }
 
-    async Order(){
+    async Order() {
         let params = {
-            cart:this.props.cart
+            cart: this.props.cart
         }
 
-       await axios.post("/api/orders",params).then(
-            (res)=>{
+        await axios.post("/api/orders", params).then(
+            (res) => {
                 console.log(res.data);
-                this.setState({placedOrder: true})
+                this.setState({ placedOrder: true })
             }
         )
     }
 
     render() {
-        if(this.state.placedOrder) {
+        if (this.state.placedOrder) {
             return <CartResult />
         }
         return (
@@ -74,41 +75,52 @@ export class Cart extends Component {
                                     </thead>
                                     <tbody>
                                         {this.props.cart.map(item => (
+                                            // <Link key={item.product.id} to={"/book/" + item.product.id}>   
+                                            // </Link>
                                             <tr key={item.product.id}>
-                                                <th scope="row">
-                                                    <div className="media">
-                                                        {
-                                                        (item.product.book_cover_photo===null)
-                                                        ? <img className="mr-3" src={logo} alt="logo" style={{ width: '30%',minHeight:'200px' }} />
-                                                        : <img className="mr-3" src={"images/" + item.product.book_cover_photo + ".jpg"} alt="logo" style={{ width: '30%' }} />
-                                                        }
-                                                       
-                                                        <br />
-                                                        <div className="media-body">
+                                                    <th scope="row">
+                                                    <Link key={item.product.id} to={"/book/" + item.product.id}>
+                                                        <div className="media">
+                                                            {
+                                                                (item.product.book_cover_photo === null)
+                                                                    ? <img className="mr-3" src={logo} alt="logo" style={{ width: '30%', minHeight: '200px' }} />
+                                                                    : <img className="mr-3" src={"images/" + item.product.book_cover_photo + ".jpg"} alt="logo" style={{ width: '30%', minHeight: '200px' }} />
+                                                            }
+
                                                             <br />
-                                                            <h3 className="mt-0">{item.product.book_title}</h3>
-                                                            <h4>{item.product.author.author_name}</h4>
+                                                            <div className="media-body">
+                                                                <br />
+                                                                <h3 className="mt-0">{item.product.book_title}</h3>
+                                                                <h6>{item.product.author.author_name}</h6>
+                                                            </div>
                                                         </div>
-                                                    </div>
-                                                </th>
-                                                <td>
-                                                    $<span id="test">{item.product.final_price}</span>
-                                                </td>
-                                                <td>
-                                                    <div className="input-group number-spinner" style={{ margin: 'auto' }}>
-                                                        <span className="input-group-btn">
-                                                            <button id="btnSub" className="btn btn-default" data-dir="dwn" onClick={() =>this.props.DecreaseQuantity(item.product)}>-</button>
-                                                        </span>
-                                                        <input id="number" type="text" className="form-control text-center" value={item.quantity} readOnly />
-                                                        <span className="input-group-btn">
-                                                            <button id="btnAdd" className="btn btn-default" data-dir="up" onClick={() => this.props.IncreaseQuantity(item.product)}>+</button>
-                                                        </span>
-                                                    </div>
-                                                </td>
-                                                <td>
-                                                    $<span id="PriceTotal">{this.calculatePrice(item.product.final_price, item.quantity)}</span>
-                                                </td>
-                                            </tr>
+                                                    </Link>
+                                                    </th>
+                                                    <td style={{ paddingTop: '60px' }}>
+                                                        $<span id="test">{item.product.final_price}</span>
+                                                        <br />
+                                                        {
+                                                            (item.product.final_price === item.product.book_price)
+                                                                ? ""
+                                                                : <del>${item.product.book_price}</del>
+                                                        }
+                                                    </td>
+                                                    <td style={{ paddingTop: '53px' }}>
+                                                        <div className="input-group number-spinner" style={{ margin: 'auto' }}>
+                                                            <span className="input-group-btn">
+                                                                <button id="btnSub" className="btn btn-default" data-dir="dwn" onClick={() => this.props.DecreaseQuantity(item.product)}>-</button>
+                                                            </span>
+                                                            <input id="number" type="text" className="form-control text-center" value={item.quantity} readOnly />
+                                                            <span className="input-group-btn">
+                                                                <button id="btnAdd" className="btn btn-default" data-dir="up" onClick={() => this.props.IncreaseQuantity(item.product)}>+</button>
+                                                            </span>
+                                                        </div>
+                                                    </td>
+                                                    <td style={{ paddingTop: '60px' }}>
+                                                        $<span id="PriceTotal">{this.calculatePrice(item.product.final_price, item.quantity)}</span>
+                                                    </td>
+                                                </tr>
+
                                         ))}
 
                                     </tbody>
@@ -122,7 +134,7 @@ export class Cart extends Component {
                                     <div className="card-body">
                                         <h5 className="card-title">$<span id="cartTol">{this.calculateCart()}</span></h5>
                                         <button className="btn btn-primary"
-                                        onClick={()=>this.Order()}
+                                            onClick={() => this.Order()}
                                         >
                                             Place Order
                                         </button>

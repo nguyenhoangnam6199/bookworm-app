@@ -87,7 +87,7 @@ export default class Shop extends Component {
                     page: res.data.current_page,
                     to: res.data.last_page
                 });
-                console.log(this.state.page);
+                console.log(this.state.listpro);
             })
             .catch((error) => {
                 console.log(error);
@@ -192,7 +192,10 @@ export default class Shop extends Component {
             <div>
                 <section className="section-pagetop bg-primary">
                     <div className="container">
-                        <h2 className="title-page text-white">Book ( Filter by {this.state.mode})</h2>
+                        <h2 style={{display: 'flex'}} className="title-page text-white">
+                            Books   
+                            <h5 style={{marginTop:'10px', marginLeft:'5px'}}> ( Filter by {this.state.mode} )</h5>
+                        </h2>
                     </div>
                 </section>
                 
@@ -267,6 +270,7 @@ export default class Shop extends Component {
                                         <option value="5">Show 5</option>
                                         <option value="10">Show 10</option>
                                         <option value="15">Show 15</option>
+                                        <option value="25">Show 25</option>
                                     </select>
                                 </div>
                             </div>

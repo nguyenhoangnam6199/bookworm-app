@@ -34,6 +34,8 @@ export class ProductDetail extends Component {
         this.Func1= this.Func1.bind(this);
         this.Func2 = this.Func2.bind(this);
         this.FuncStar = this.FuncStar.bind(this);
+        this.addToCart = this.addToCart.bind(this);
+        this.toDateString = this.toDateString.bind(this);
      }
     componentDidMount() {
         console.log(this.props.match.params.id)
@@ -129,11 +131,19 @@ export class ProductDetail extends Component {
     }
 
     AddFunction() {
-        this.setState({ quantity: this.state.quantity + 1 })
+        var x = this.state.quantity + 1;
+        if(x>8){
+            x=8;
+        }
+        this.setState({ quantity: x})
     }
 
     SubFunction() {
-        this.setState({ quantity: this.state.quantity - 1 })
+        var x = this.state.quantity-1;
+        if(x<1){
+            x = 1;
+        }
+        this.setState({ quantity: x })
     }
 
     async FuncStar(id) {
@@ -153,6 +163,7 @@ export class ProductDetail extends Component {
             quantity: this.state.quantity
         })
         this.setState({ quantity: 1 })
+        alert("Add Card Successfully !");
     }
 
     Funct1(e){
@@ -188,11 +199,33 @@ export class ProductDetail extends Component {
             review_details: this.state.detail,
             rating_start:this.state.stars
         };
+        // if(x.review_title.length>120){
+        //     alert("Max title is 120 character !");
+        //     e.preventDefault();
+        //     return;
+        // }
+        // else{
+        //     axios.post("/api/review/",x)
+        //     .then(res=>console.log(res.data));
+        //     alert("Insert Review Successfull !");
+        //     this.FetchData1(),
+        //     this.FetchData();
+        // }
         axios.post("/api/review/",x)
-        .then(res=>console.log(res.data));
-        this.FetchData1(),
-        this.FetchData();
+            .then(res=>console.log(res.data));
+            alert("Insert Review Successfull !");
+            this.FetchData1(),
+            this.FetchData();
     }
+
+     toDateString(string) {
+        let date = new Date(string)
+        return date.toLocaleDateString('en-US', {
+          month: 'short',
+          day: 'numeric',
+          year: 'numeric',
+        })
+      }
     render() {
         return (
             <div className="container">
@@ -296,8 +329,8 @@ export class ProductDetail extends Component {
                                 {this.state.review.map(b => (
                                     <div key={b.id}>
                                         <h5>{b.review_title} | {this.state.star} Star</h5>
-                                        <p>{b.review_details}</p>
-                                        <p>{b.review_date}</p>
+                                        <p style={{ wordWrap: 'break-word', display: 'block', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{b.review_details}</p>
+                                        <p>{this.toDateString(b.review_date)}</p>
                                         <hr />
                                         <br />
                                     </div>
@@ -319,11 +352,11 @@ export class ProductDetail extends Component {
                         <form onSubmit={this.onSubmit}>
                             <div className="form-group">
                                 <label htmlFor="exampleFormControlInput1">Add a title</label>
-                                <input type="text" value={this.state.title} onChange={this.Funct1} className="form-control" id="exampleFormControlInput1" placeholder="Add a Title" />
+                                <input required type="text" value={this.state.title} onChange={this.Funct1} className="form-control" id="exampleFormControlInput1" placeholder="Add a Title" />
                             </div>
                             <div className="form-group">
                                 <label htmlFor="exampleFormControlInput1">Detail please! Your review helps other shoppers</label>
-                                <input type="text" value={this.state.detail} onChange={this.Funct2} className="form-control" id="exampleFormControlInput1" placeholder="Add a content" />
+                                <input type="text" required value={this.state.detail} onChange={this.Funct2} className="form-control" id="exampleFormControlInput1" placeholder="Add a content" />
                             </div>
                             <div className="form-group">
                                 <label htmlFor="exampleFormControlSelect1">Select a rating star</label>
