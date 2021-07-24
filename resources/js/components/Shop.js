@@ -9,6 +9,9 @@ export default class Shop extends Component {
     constructor(props) {
         super(props)
         this.state = {
+            from1:'',
+            to1:'',
+            total:'',
             from: 1,
             to: '',
             category: [],
@@ -85,7 +88,10 @@ export default class Shop extends Component {
                     listpro: res.data.data,
                     listpro2: res.data.links,
                     page: res.data.current_page,
-                    to: res.data.last_page
+                    to: res.data.last_page,
+                    from1: res.data.from,
+                    to1:res.data.to,
+                    total:res.data.total
                 });
                 console.log(this.state.listpro);
             })
@@ -213,7 +219,7 @@ export default class Shop extends Component {
                                     </h2>
                                     <div id="collapseOne" className="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
                                         {this.state.category.map(cate => (
-                                            <div className="accordion-body" key={cate.id} value={cate.id} id={cate.id} onClick={() => this.FuntionCate(cate.id)}>
+                                            <div className="accordion-body" style={{ cursor: "pointer" }} key={cate.id} value={cate.id} id={cate.id} onClick={() => this.FuntionCate(cate.id)}>
                                                 {cate.category_name.toUpperCase()}
                                             </div>
                                         ))}
@@ -229,7 +235,7 @@ export default class Shop extends Component {
                                     <div id="collapseTwo" className="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#accordionExample">
 
                                         {this.state.author.map(auth => (
-                                            <div key={auth.id} className="accordion-body" value={auth.id} id={auth.id} onClick={() => this.FunctionAuth(auth.id)}>
+                                            <div key={auth.id} style={{ cursor: "pointer" }} className="accordion-body" value={auth.id} id={auth.id} onClick={() => this.FunctionAuth(auth.id)}>
                                                 {auth.author_name.toUpperCase()}
                                             </div>
                                         ))}
@@ -245,7 +251,7 @@ export default class Shop extends Component {
                                     <div id="collapseThree" className="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#accordionExample">
 
                                         {this.state.star.map(st => (
-                                            <div key={st.id} className="accordion-body" value={st.id} id={st.id} onClick={() => this.FuncStar(st.id)}>
+                                            <div key={st.id} style={{ cursor: "pointer" }} className="accordion-body" value={st.id} id={st.id} onClick={() => this.FuncStar(st.id)}>
                                                 {st.des.toUpperCase()}
                                             </div>
                                         ))}
@@ -256,8 +262,8 @@ export default class Shop extends Component {
                         </div>
                         <div className="col-10">
                             <div className="row">
-                                <p>      </p>
-                                <div className="col-md-3" style={{ marginLeft: '550px' }}>
+                                <div className="col-md-6">Showing {this.state.from1} - {this.state.to1} of {this.state.total} books</div>
+                                <div className="col-md-4" >
                                     <select id="sortch" className="custom-select" onChange={() => this.FunctionBy()}>
                                         <option value="sale">Sort By OnSale</option>
                                         <option value="popular">Sort By Popularity</option>
@@ -270,6 +276,7 @@ export default class Shop extends Component {
                                         <option value="5">Show 5</option>
                                         <option value="10">Show 10</option>
                                         <option value="15">Show 15</option>
+                                        <option value="20">Show 20</option>
                                         <option value="25">Show 25</option>
                                     </select>
                                 </div>

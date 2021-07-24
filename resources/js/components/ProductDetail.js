@@ -8,6 +8,9 @@ export class ProductDetail extends Component {
     constructor(props) {
         super(props)
         this.state = {
+            from1:'',
+            to1:'',
+            total:'',
             id: '1',
             per: '5',
             condition: 'time',
@@ -85,7 +88,10 @@ export class ProductDetail extends Component {
                 this.setState({
                     review: res.data.data,
                     page: res.data.current_page,
-                    to: res.data.last_page
+                    to: res.data.last_page,
+                    from1: res.data.from,
+                    to1:res.data.to,
+                    total:res.data.total
                 });
                 console.log(this.state.review);
             })
@@ -300,15 +306,15 @@ export class ProductDetail extends Component {
                                     {Object.keys(this.state.sumStar).length === 0 ? "N/A" : this.state.sumStar.sumofstar}
                                     ) |
                                     {this.state.numOfStar.map(b => (
-                                        <span onClick={() => this.FuncStar(b.rating_start)} key={b.rating_start} id={b.rating_start}>
+                                        <span style={{ cursor: "pointer" }} onClick={() => this.FuncStar(b.rating_start)} key={b.rating_start} id={b.rating_start}>
                                             {b.rating_start} star ({b.sl}) |
                                         </span>
                                     ))}
 
                                 </p>
-                                <div>
-                                    <p style={{ float: 'left' }}></p>
-                                    <div className='col-8' style={{ float: 'right' }}>
+                                <div className="row">
+                                    <div className="col-4">Showing {this.state.from1} - {this.state.to1} of {this.state.total} reviews</div>
+                                    <div className='col-8'>
                                         <select id="sortText" className="custom-select" style={{ float: 'left', width: '60%' }} onClick={() => this.Func1()}>
                                             {/* <option value="sale">Sort by on sale</option> */}
                                             <option value="time1">Sort by date: newest to oldest</option>

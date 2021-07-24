@@ -4038,6 +4038,9 @@ var ProductDetail = /*#__PURE__*/function (_Component) {
 
     _this = _super.call(this, props);
     _this.state = {
+      from1: '',
+      to1: '',
+      total: '',
       id: '1',
       per: '5',
       condition: 'time',
@@ -4151,7 +4154,10 @@ var ProductDetail = /*#__PURE__*/function (_Component) {
                   _this3.setState({
                     review: res.data.data,
                     page: res.data.current_page,
-                    to: res.data.last_page
+                    to: res.data.last_page,
+                    from1: res.data.from,
+                    to1: res.data.to,
+                    total: res.data.total
                   });
 
                   console.log(_this3.state.review);
@@ -4601,6 +4607,9 @@ var ProductDetail = /*#__PURE__*/function (_Component) {
             }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)("p", {
               children: ["total (", Object.keys(this.state.sumStar).length === 0 ? "N/A" : this.state.sumStar.sumofstar, ") |", this.state.numOfStar.map(function (b) {
                 return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)("span", {
+                  style: {
+                    cursor: "pointer"
+                  },
                   onClick: function onClick() {
                     return _this4.FuncStar(b.rating_start);
                   },
@@ -4609,15 +4618,12 @@ var ProductDetail = /*#__PURE__*/function (_Component) {
                 }, b.rating_start);
               })]
             }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)("div", {
-              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("p", {
-                style: {
-                  "float": 'left'
-                }
+              className: "row",
+              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)("div", {
+                className: "col-4",
+                children: ["Showing ", this.state.from1, " - ", this.state.to1, " of ", this.state.total, " reviews"]
               }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)("div", {
                 className: "col-8",
-                style: {
-                  "float": 'right'
-                },
                 children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)("select", {
                   id: "sortText",
                   className: "custom-select",
@@ -4845,6 +4851,9 @@ var Shop = /*#__PURE__*/function (_Component) {
 
     _this = _super.call(this, props);
     _this.state = {
+      from1: '',
+      to1: '',
+      total: '',
       from: 1,
       to: '',
       category: [],
@@ -4926,7 +4935,10 @@ var Shop = /*#__PURE__*/function (_Component) {
           listpro: res.data.data,
           listpro2: res.data.links,
           page: res.data.current_page,
-          to: res.data.last_page
+          to: res.data.last_page,
+          from1: res.data.from,
+          to1: res.data.to,
+          total: res.data.total
         });
 
         console.log(_this3.state.listpro);
@@ -5257,6 +5269,9 @@ var Shop = /*#__PURE__*/function (_Component) {
                     children: this.state.category.map(function (cate) {
                       return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("div", {
                         className: "accordion-body",
+                        style: {
+                          cursor: "pointer"
+                        },
                         value: cate.id,
                         id: cate.id,
                         onClick: function onClick() {
@@ -5287,6 +5302,9 @@ var Shop = /*#__PURE__*/function (_Component) {
                     "data-bs-parent": "#accordionExample",
                     children: this.state.author.map(function (auth) {
                       return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("div", {
+                        style: {
+                          cursor: "pointer"
+                        },
                         className: "accordion-body",
                         value: auth.id,
                         id: auth.id,
@@ -5318,6 +5336,9 @@ var Shop = /*#__PURE__*/function (_Component) {
                     "data-bs-parent": "#accordionExample",
                     children: this.state.star.map(function (st) {
                       return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("div", {
+                        style: {
+                          cursor: "pointer"
+                        },
                         className: "accordion-body",
                         value: st.id,
                         id: st.id,
@@ -5334,13 +5355,11 @@ var Shop = /*#__PURE__*/function (_Component) {
               className: "col-10",
               children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)("div", {
                 className: "row",
-                children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("p", {
-                  children: "      "
+                children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)("div", {
+                  className: "col-md-6",
+                  children: ["Showing ", this.state.from1, " - ", this.state.to1, " of ", this.state.total, " books"]
                 }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("div", {
-                  className: "col-md-3",
-                  style: {
-                    marginLeft: '550px'
-                  },
+                  className: "col-md-4",
                   children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)("select", {
                     id: "sortch",
                     className: "custom-select",
@@ -5378,6 +5397,9 @@ var Shop = /*#__PURE__*/function (_Component) {
                     }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("option", {
                       value: "15",
                       children: "Show 15"
+                    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("option", {
+                      value: "20",
+                      children: "Show 20"
                     }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("option", {
                       value: "25",
                       children: "Show 25"
