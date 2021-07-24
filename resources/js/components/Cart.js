@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
+import {notification} from 'antd';
 import logo from "../../assets/404.jpg";
 import { connect } from 'react-redux';
-import { DecreaseQuantity, IncreaseQuantity, EmptyCart } from "../store/actions";
+import { DecreaseQuantity, IncreaseQuantity, EmptyCart, DeleteItemFromCart } from "../store/actions";
 import EmptyCartNoti from './EmptyCartNoti';
 import axios from "axios"
 import { Link } from "react-router-dom";
@@ -34,15 +35,53 @@ export class Cart extends Component {
         return TotalCart;
     }
 
+    openNotificationWithIcon = (type, title, message) => {
+        notification[type]({
+          message: title,
+          description: message
+        });
+      };
+
     async Order() {
+        const {cart}  = this.props;
+
         let params = {
-            cart: this.props.cart
+            cart: cart
+        }
+
+        const resGetIdBooks = await axios.get("/api/bookID");
+        const {status, data}  = resGetIdBooks;
+        let idArr = []
+        let itemIdNotExist = [];
+        let itemNameNotExist = [];
+        if(status === 200){
+            console.log(data);
+            data.map(item => idArr.push(item.id));
+            cart.map(item => {
+                const {id, book_title} = item.product
+                if(!idArr.includes(id)){
+                    itemIdNotExist.push(id);
+                    itemNameNotExist.push(book_title);
+                }
+            })
+
+            if(itemIdNotExist.length > 0){
+                console.log('item not exist: ' + itemNameNotExist.join(' & '))
+                itemIdNotExist.map(item => this.props.DeleteItemFromCart(item));
+                return;
+            }
         }
 
         await axios.post("/api/orders", params).then(
             (res) => {
+                
                 console.log(res.data);
-                this.setState({ placedOrder: true })
+                this.setState(
+                    {
+                        placedOrder: true,
+                    }
+                )
+                this.props.EmptyCart();
             }
         )
     }
@@ -78,7 +117,7 @@ export class Cart extends Component {
                                             // <Link key={item.product.id} to={"/book/" + item.product.id}>   
                                             // </Link>
                                             <tr key={item.product.id}>
-                                                    <th scope="row">
+                                                <th scope="row">
                                                     <Link key={item.product.id} to={"/book/" + item.product.id}>
                                                         <div className="media">
                                                             {
@@ -95,31 +134,31 @@ export class Cart extends Component {
                                                             </div>
                                                         </div>
                                                     </Link>
-                                                    </th>
-                                                    <td style={{ paddingTop: '60px' }}>
-                                                        $<span id="test">{item.product.final_price}</span>
-                                                        <br />
-                                                        {
-                                                            (item.product.final_price === item.product.book_price)
-                                                                ? ""
-                                                                : <del>${item.product.book_price}</del>
-                                                        }
-                                                    </td>
-                                                    <td style={{ paddingTop: '53px' }}>
-                                                        <div className="input-group number-spinner" style={{ margin: 'auto' }}>
-                                                            <span className="input-group-btn">
-                                                                <button id="btnSub" className="btn btn-default" data-dir="dwn" onClick={() => this.props.DecreaseQuantity(item.product)}>-</button>
-                                                            </span>
-                                                            <input id="number" type="text" className="form-control text-center" value={item.quantity} readOnly />
-                                                            <span className="input-group-btn">
-                                                                <button id="btnAdd" className="btn btn-default" data-dir="up" onClick={() => this.props.IncreaseQuantity(item.product)}>+</button>
-                                                            </span>
-                                                        </div>
-                                                    </td>
-                                                    <td style={{ paddingTop: '60px' }}>
-                                                        $<span id="PriceTotal">{this.calculatePrice(item.product.final_price, item.quantity)}</span>
-                                                    </td>
-                                                </tr>
+                                                </th>
+                                                <td style={{ paddingTop: '60px' }}>
+                                                    $<span id="test">{item.product.final_price}</span>
+                                                    <br />
+                                                    {
+                                                        (item.product.final_price === item.product.book_price)
+                                                            ? ""
+                                                            : <del>${item.product.book_price}</del>
+                                                    }
+                                                </td>
+                                                <td style={{ paddingTop: '53px' }}>
+                                                    <div className="input-group number-spinner" style={{ margin: 'auto' }}>
+                                                        <span className="input-group-btn">
+                                                            <button id="btnSub" className="btn btn-default" data-dir="dwn" onClick={() => this.props.DecreaseQuantity(item.product)}>-</button>
+                                                        </span>
+                                                        <input id="number" type="text" className="form-control text-center" value={item.quantity} readOnly />
+                                                        <span className="input-group-btn">
+                                                            <button id="btnAdd" className="btn btn-default" data-dir="up" onClick={() => this.props.IncreaseQuantity(item.product)}>+</button>
+                                                        </span>
+                                                    </div>
+                                                </td>
+                                                <td style={{ paddingTop: '60px' }}>
+                                                    $<span id="PriceTotal">{this.calculatePrice(item.product.final_price, item.quantity)}</span>
+                                                </td>
+                                            </tr>
 
                                         ))}
 
@@ -152,7 +191,8 @@ export class Cart extends Component {
 const mapStateToProps = state => {
     return {
         cart: state._cartReducers.carts,
+        numbercart: state._cartReducers.numberCart
     }
 }
 
-export default connect(mapStateToProps, { IncreaseQuantity, DecreaseQuantity, EmptyCart })(Cart)
+export default connect(mapStateToProps, { IncreaseQuantity, DecreaseQuantity, EmptyCart, DeleteItemFromCart })(Cart)

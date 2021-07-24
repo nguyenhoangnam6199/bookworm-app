@@ -9,29 +9,21 @@ export default class Shop extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            from1:'',
-            to1:'',
-            total:'',
-            from: 1,
-            to: '',
+            filter: '',
+            filterValue: undefined,
+            per: '20',
+            page: '1',
+            isAsc: 'false',
+            sort: 'sale',
+            total: 0,
+            from: 0,
+            to: 0,
+            page_count: 0,
             category: [],
             author: [],
             listpro: [],
-            listpro1: [],
-            listpro2: [],
-            lo: '1',
-            view: 'cate',
-            auth: 'Megane Kris DVM',
-            mode: 'sale',
-            sort: '1',
-            per: '5',
-            page: '1',
-            isAsc: 'false',
             star: [
-                {
-                    id: 1,
-                    des: '1 Star'
-                },
+                { id: 1, des: '1 Star' },
                 { id: 2, des: '2 Star' },
                 { id: 3, des: '3 Star' },
                 { id: 4, des: '4 Star' },
@@ -64,21 +56,20 @@ export default class Shop extends Component {
             .catch((error) => {
                 console.log(error);
             });
+
         this.FetcData()
-
-
     }
 
     FetcData() {
         let config = {
             params: {
                 // $loai, $condition, $category, $per, $isAscending
-                loai: this.state.lo,
-                condition: this.state.mode,
-                category: this.state.sort,
+                filter: this.state.filter,
+                filterValue: this.state.filterValue,
+                sort: this.state.sort,
+                isAscending: this.state.isAsc,
                 per: this.state.per,
-                page: this.state.page,
-                isAscending: this.state.isAsc
+                page: this.state.page
             }
         }
 
@@ -86,12 +77,11 @@ export default class Shop extends Component {
             .then(res => {
                 this.setState({
                     listpro: res.data.data,
-                    listpro2: res.data.links,
                     page: res.data.current_page,
-                    to: res.data.last_page,
-                    from1: res.data.from,
-                    to1:res.data.to,
-                    total:res.data.total
+                    page_count: res.data.last_page,
+                    from: res.data.from,
+                    to: res.data.to,
+                    total: res.data.total
                 });
                 console.log(this.state.listpro);
             })
@@ -99,8 +89,6 @@ export default class Shop extends Component {
                 console.log(error);
             });
     }
-
-
 
     async setPage(number) {
         console.log("cur page: " + number)
@@ -111,96 +99,97 @@ export default class Shop extends Component {
     }
 
 
-    async FuntionCate(cate) {
-        var x = document.getElementById(cate).id;
-        console.log(x);
-        await this.setState(
-            { sort: x }
-
-        )
-        console.log(this.state.sort);
-
-        this.FetcData()
-    }
-
-    async FunctionAuth(authu) {
-        var x = document.getElementById(authu).id;
-        //console.log(x);
-        await this.setState(
-            {
-                lo: '2',
-                sort: x,
-            }
-        )
-        this.FetcData();
-    }
-
-    async FuncStar(star) {
-        var x = document.getElementById(star).id;
-        await this.setState(
-            {
-                lo: '3',
-                sort: x,
-            }
-        )
-        this.FetcData();
-    }
-
-    async LoadApi(url) {
-        await axios.get(url)
-            .then(res => {
-                this.setState({
-                    listpro: res.data.data,
-                });
-                //console.log(this.state.from);
-            })
-            .catch((error) => {
-                console.log(error);
-            });
-    }
-    async FunctionBy() {
-        var x = document.getElementById('sortch').value;
-        if (x === "price1") {
-            x = "price";
-            await this.setState(
-                { isAsc: 'true' }
-            )
-        }
-        else if (x === "price2") {
-            x = "price";
-            await this.setState(
-                { isAsc: 'false' }
-            )
-        }
-        console.log(x);
+    async filterCategory(cate) {
         await this.setState({
-            mode: x,
+            filter: "category",
+            filterValue: cate
         })
-        // console.log(this.state.mode);
-        // console.log(this.state.isAsc);
+
         this.FetcData()
     }
 
-    async FunctionBy1() {
-        var x = document.getElementById('numch').value.toString();
+    async filterAuthor(author) {
         await this.setState({
-            per: x.toString()
+            filter: "author",
+            filterValue: author
         })
-        //console.log(x);
-        //console.log(this.state.per);
+
         this.FetcData()
+    }
+
+    async filterStar(star) {
+        await this.setState({
+            filter: "star",
+            filterValue: star
+        })
+
+        this.FetcData()
+    }
+
+    async changeSort(event) {
+        let value = event.target.value
+        
+        await this.setState({
+            sort: value
+        })
+
+        this.FetcData()
+    }
+
+    async changePerPage(event) {
+        await this.setState({
+            per: event.target.value
+        })
+        this.FetcData()
+    }
+
+    capitalizeFirstLetter(string) {
+        return string.charAt(0).toUpperCase() + string.slice(1);
+    }
+
+    getFilerTitle() {
+        // if(this.state.filter == "") return;
+
+        let filter_name = this.capitalizeFirstLetter(this.state.filter)
+        let filter_value = ""
+        switch (this.state.filter) {
+            case 'category':
+                let category = this.state.category.find(item => {
+                    return (item.id == this.state.filterValue)
+                })
+                filter_value = this.capitalizeFirstLetter(category.category_name)
+                break;
+
+            case 'author':
+                let author = this.state.author.find(item => {
+                    return (item.id == this.state.filterValue)
+                })
+                filter_value = this.capitalizeFirstLetter(author.author_name)
+                break;
+
+            case 'star':
+                let star = this.state.star.find(item => {
+                    return (item.id == this.state.filterValue)
+                })
+                filter_value = this.capitalizeFirstLetter(star.des)
+                break;
+        
+            default:
+                return;
+                break;
+        }
+
+        return `( Filter by ${filter_name} ${filter_value} )`
     }
 
     render() {
-        const to1 = this.state.to;
-        const from1 = this.state.from;
         return (
             <div>
                 <section className="section-pagetop bg-primary">
                     <div className="container">
                         <h2 style={{display: 'flex'}} className="title-page text-white">
                             Books   
-                            <h5 style={{marginTop:'10px', marginLeft:'5px'}}> ( Filter by {this.state.mode} )</h5>
+                            <h5 style={{marginTop:'10px', marginLeft:'5px'}}>{this.getFilerTitle()} </h5>
                         </h2>
                     </div>
                 </section>
@@ -219,7 +208,7 @@ export default class Shop extends Component {
                                     </h2>
                                     <div id="collapseOne" className="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
                                         {this.state.category.map(cate => (
-                                            <div className="accordion-body" style={{ cursor: "pointer" }} key={cate.id} value={cate.id} id={cate.id} onClick={() => this.FuntionCate(cate.id)}>
+                                            <div className="accordion-body" style={{ cursor: "pointer" }} key={cate.id} value={cate.id} id={cate.id} onClick={() => this.filterCategory(cate.id)}>
                                                 {cate.category_name.toUpperCase()}
                                             </div>
                                         ))}
@@ -235,7 +224,7 @@ export default class Shop extends Component {
                                     <div id="collapseTwo" className="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#accordionExample">
 
                                         {this.state.author.map(auth => (
-                                            <div key={auth.id} style={{ cursor: "pointer" }} className="accordion-body" value={auth.id} id={auth.id} onClick={() => this.FunctionAuth(auth.id)}>
+                                            <div key={auth.id} style={{ cursor: "pointer" }} className="accordion-body" value={auth.id} id={auth.id} onClick={() => this.filterAuthor(auth.id)}>
                                                 {auth.author_name.toUpperCase()}
                                             </div>
                                         ))}
@@ -251,7 +240,7 @@ export default class Shop extends Component {
                                     <div id="collapseThree" className="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#accordionExample">
 
                                         {this.state.star.map(st => (
-                                            <div key={st.id} style={{ cursor: "pointer" }} className="accordion-body" value={st.id} id={st.id} onClick={() => this.FuncStar(st.id)}>
+                                            <div key={st.id} style={{ cursor: "pointer" }} className="accordion-body" value={st.id} id={st.id} onClick={() => this.filterStar(st.id)}>
                                                 {st.des.toUpperCase()}
                                             </div>
                                         ))}
@@ -262,17 +251,17 @@ export default class Shop extends Component {
                         </div>
                         <div className="col-10">
                             <div className="row">
-                                <div className="col-md-6">Showing {this.state.from1} - {this.state.to1} of {this.state.total} books</div>
+                                <div className="col-md-6">Showing {this.state.from} - {this.state.to} of {this.state.total} books</div>
                                 <div className="col-md-4" >
-                                    <select id="sortch" className="custom-select" onChange={() => this.FunctionBy()}>
+                                    <select id="sortch" className="custom-select" onChange={(e) => this.changeSort(e)}>
                                         <option value="sale">Sort By OnSale</option>
                                         <option value="popular">Sort By Popularity</option>
-                                        <option value="price1">Sort By Price: low to high</option>
-                                        <option value="price2">Sort By Price: hight to low</option>
+                                        <option value="price-acs">Sort By Price: low to high</option>
+                                        <option value="price-desc">Sort By Price: hight to low</option>
                                     </select>
                                 </div>
                                 <div className="col-md-2" >
-                                    <select id="numch" className="custom-select" onChange={() => this.FunctionBy1()}>
+                                    <select id="numch" defaultValue="20" className="custom-select" onChange={(e) => this.changePerPage(e)}>
                                         <option value="5">Show 5</option>
                                         <option value="10">Show 10</option>
                                         <option value="15">Show 15</option>
@@ -317,7 +306,7 @@ export default class Shop extends Component {
                             <br />
                             <Paginate
                                 className="text-center"
-                                page_count={to1}
+                                page_count={this.state.page_count}
                                 current_page={this.state.page}
                                 setPage={this.setPage}
                             />

@@ -1,4 +1,4 @@
-import {ADD_CART, DECREASE_QUANTITY, EMPTY_CART, INCREASE_QUANTITY} from '../actions';
+import {ADD_CART, DECREASE_QUANTITY, EMPTY_CART, INCREASE_QUANTITY, DELETE_CART} from '../actions';
 
 const cart = {
     numberCart: 0,
@@ -105,7 +105,16 @@ export default function cartReducer(state = cart, action) {
             }
         case EMPTY_CART:
             return {
-                ...initProduct
+                ...cart
+            }
+        case DELETE_CART:
+            let p_product_id = action.payload
+            return {
+                ...state,
+                numberCart: state.numberCart - 1,
+                carts: state.carts.filter((item) => {
+                return item.product.id != p_product_id
+                }),
             }
         default:
             return state;

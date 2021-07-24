@@ -13,6 +13,8 @@ import { connect } from 'react-redux';
 
 export class Header extends Component {
     render() {
+        const {cartReducers} = this.props;
+        console.log(cartReducers);
         return (
             <header className="App-header">
                 <Navbar>
@@ -47,7 +49,7 @@ export class Header extends Component {
                                     fontWeight: "bold",
                                     color: "black"
                                 }}>
-                                    Cart ({this.props.numberCart})
+                                    Cart ({cartReducers.numberCart})
                                 </NavLink>
                             </Nav>
                         </Nav>
@@ -61,7 +63,8 @@ export class Header extends Component {
 
 const mapStateToProps = state => {
     return {
-        numberCart: state._cartReducers.numberCart
+        // numberCart: state._cartReducers.numberCart
+        cartReducers:state._cartReducers
     }
 }
 

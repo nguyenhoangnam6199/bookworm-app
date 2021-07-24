@@ -25,7 +25,7 @@ export class ProductDetail extends Component {
             quantity: 1,
             title:'',
             detail:'',
-            stars:''
+            stars:1
         }
         this.setPage = this.setPage.bind(this);
         this.Funct1 = this.Funct1.bind(this);
@@ -82,6 +82,9 @@ export class ProductDetail extends Component {
     }
 
     async FetchData() {
+        console.log('/api/filterReview/' + this.props.match.params.id + "/" + this.state.star + "/" +
+        this.state.condition + "/" + this.state.isAsc + "/" + this.state.per + "?page=" + this.state.page);
+
        await axios.get('/api/filterReview/' + this.props.match.params.id + "/" + this.state.star + "/" +
             this.state.condition + "/" + this.state.isAsc + "/" + this.state.per + "?page=" + this.state.page)
             .then(res => {
@@ -198,30 +201,29 @@ export class ProductDetail extends Component {
 
     onSubmit(e){
         e.preventDefault();
-        console.log(this)
         const x = {
             book_id:this.props.match.params.id,
             review_title:this.state.title,
             review_details: this.state.detail,
             rating_start:this.state.stars
         };
-        // if(x.review_title.length>120){
-        //     alert("Max title is 120 character !");
-        //     e.preventDefault();
-        //     return;
-        // }
-        // else{
-        //     axios.post("/api/review/",x)
-        //     .then(res=>console.log(res.data));
-        //     alert("Insert Review Successfull !");
-        //     this.FetchData1(),
-        //     this.FetchData();
-        // }
-        axios.post("/api/review/",x)
+        if(this.state.title.length>120){
+            alert("Max title is 120 character !");
+            e.preventDefault();
+            return;
+        }
+        else{
+            axios.post("/api/review/",x)
             .then(res=>console.log(res.data));
             alert("Insert Review Successfull !");
             this.FetchData1(),
             this.FetchData();
+        }
+        // axios.post("/api/review/",x)
+        //     .then(res=>console.log(res.data));
+        //     alert("Insert Review Successfull !");
+        //     this.FetchData1(),
+        //     this.FetchData();
     }
 
      toDateString(string) {

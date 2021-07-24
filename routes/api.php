@@ -51,3 +51,5 @@ Route::get('/filterReview/{idBook}/{idStar}/{condition}/{isAsc}/{per}',[ShopCont
 Route::post('/orders',[PlaceOrderController::class,'store']);
 
 Route::post('/review',[ReviewController::class,'store']);
+
+Route::get('/bookID',[HomeController::class,'getAllID']);
