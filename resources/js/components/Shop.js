@@ -179,7 +179,7 @@ export default class Shop extends Component {
                 break;
         }
 
-        return `( Filter by ${filter_name}: ${filter_value} )`
+        return `( Filtered by ${filter_name}: ${filter_value} )`
     }
 
     render() {
@@ -257,7 +257,7 @@ export default class Shop extends Component {
                                 <div className="col-md-6">Showing {this.state.from} - {this.state.to} of {this.state.total} books</div>
                                 <div className="col-md-4" >
                                     <select id="sortch" className="custom-select" onChange={(e) => this.changeSort(e)}>
-                                        <option value="sale">Sort By OnSale</option>
+                                        <option value="sale">Sort By On Sale</option>
                                         <option value="popular">Sort By Popularity</option>
                                         <option value="price-asc">Sort By Price: low to high</option>
                                         <option value="price-desc">Sort By Price: hight to low</option>
@@ -266,7 +266,6 @@ export default class Shop extends Component {
                                 <div className="col-md-2" >
                                     <select id="numch" defaultValue="20" className="custom-select" onChange={(e) => this.changePerPage(e)}>
                                         <option value="5">Show 5</option>
-                                        <option value="10">Show 10</option>
                                         <option value="15">Show 15</option>
                                         <option value="20">Show 20</option>
                                         <option value="25">Show 25</option>

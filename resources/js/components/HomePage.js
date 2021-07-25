@@ -67,7 +67,7 @@ export default class HomePage extends Component {
                 <div className="row">
                     <div className="col-12">
                         <h4 className="d-inline">OnSale</h4>
-                        <Link to="/shop" className="btn btn-secondary float-right">View all <i className="fa fa-caret-right ml-2"></i></Link>
+                        <Link to="/shop" className="btn btn-secondary float-right">View all <i className="fas fa-caret-right"></i></Link>
                     </div>
                 </div>
                 <br />

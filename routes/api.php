@@ -48,6 +48,8 @@ Route::get('/getSumStar/{id}',[ShopController::class,'sumStar']);
 
 Route::get('/filterReview/{idBook}/{idStar}/{condition}/{isAsc}/{per}',[ShopController::class,'FilterReview']);
 
+Route::get('/filterReview/{idBook}/{condition}/{isAsc}/{per}',[ShopController::class,'FilterAllReview']);
+
 Route::post('/orders',[PlaceOrderController::class,'store']);
 
 Route::post('/review',[ReviewController::class,'store']);

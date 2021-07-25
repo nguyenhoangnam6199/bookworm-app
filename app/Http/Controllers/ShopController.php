@@ -156,7 +156,34 @@ class ShopController extends Controller
 
     function FilterReview($idBook, $idStar, $condition,$isAscending, $per)
     {
-        if($condition==="time"){
+        if($condition==="time"&&$idStar==="0"){
+            $b = DB::table('books')
+                ->join('reviews', 'books.id', '=', 'reviews.book_id')
+                ->select(
+                    'reviews.id',
+                    'reviews.review_title',
+                    'reviews.review_details',
+                    'reviews.review_date',
+                    'reviews.rating_start'
+                )
+                ->where('books.id', $idBook)
+                ->groupBy(
+                    'reviews.id',
+                    'reviews.review_title',
+                    'reviews.review_details',
+                    'reviews.review_date'
+                );
+
+                if($isAscending==="true"){
+                    $b=$b->orderBy('reviews.review_date')->paginate($per);
+                }
+                else{
+                    $b=$b->orderByDesc('reviews.review_date')->paginate($per);
+                }
+                // ->paginate($per);
+            return response()->json($b);
+        }
+        else if($condition==="time"){
             $b = DB::table('books')
                 ->join('reviews', 'books.id', '=', 'reviews.book_id')
                 ->select(
@@ -167,6 +194,36 @@ class ShopController extends Controller
                 )
                 ->where('books.id', $idBook)
                 ->havingRaw('cast(reviews.rating_start as int) = ?', [$idStar])
+                ->groupBy(
+                    'reviews.id',
+                    'reviews.review_title',
+                    'reviews.review_details',
+                    'reviews.review_date',
+                    'reviews.rating_start'
+                );
+
+                if($isAscending==="true"){
+                    $b=$b->orderBy('reviews.review_date')->paginate($per);
+                }
+                else{
+                    $b=$b->orderByDesc('reviews.review_date')->paginate($per);
+                }
+                // ->paginate($per);
+            return response()->json($b);
+        }
+    }
+
+    function FilterAllReview($idBook, $condition,$isAscending, $per){
+        if($condition==="time"){
+            $b = DB::table('books')
+                ->join('reviews', 'books.id', '=', 'reviews.book_id')
+                ->select(
+                    'reviews.id',
+                    'reviews.review_title',
+                    'reviews.review_details',
+                    'reviews.review_date'
+                )
+                ->where('books.id', $idBook)
                 ->groupBy(
                     'reviews.id',
                     'reviews.review_title',

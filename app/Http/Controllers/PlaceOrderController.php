@@ -12,6 +12,7 @@ class PlaceOrderController extends Controller
    
     public function store(Request $request)
     {
+      //  $b = $request->data();
         $input_id = $request->input("cart.*.product.id");
         $input_quantity = $request->input("cart.*.quantity");
 

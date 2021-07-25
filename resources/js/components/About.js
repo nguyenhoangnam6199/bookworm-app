@@ -36,7 +36,7 @@ export default class About extends Component {
                                 guidebooks (all 10% off) to suit the needs and tastes of every traveller and budget.</p>
                             <p>We believe that a novel or travelogue can be just as valuable a key to a place as any guidebook,
                                 and our well-read, well-travelled staff is happy to make reading recommendations for any
-                                traveller, book lover, or gift giver</p>
+                                traveller, book lover, or gift giver.</p>
                         </div>
                     </div>
                 </div>
