@@ -67,7 +67,7 @@ export default class Shop extends Component {
                 filter: this.state.filter,
                 filterValue: this.state.filterValue,
                 sort: this.state.sort,
-                isAscending: this.state.isAsc,
+                // isAscending: this.state.isAsc,
                 per: this.state.per,
                 page: this.state.page
             }
@@ -128,7 +128,7 @@ export default class Shop extends Component {
 
     async changeSort(event) {
         let value = event.target.value
-        
+        console.log(value)
         await this.setState({
             sort: value
         })
@@ -179,7 +179,7 @@ export default class Shop extends Component {
                 break;
         }
 
-        return `( Filter by ${filter_name} ${filter_value} )`
+        return `( Filter by ${filter_name}: ${filter_value} )`
     }
 
     render() {
@@ -209,7 +209,8 @@ export default class Shop extends Component {
                                     <div id="collapseOne" className="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
                                         {this.state.category.map(cate => (
                                             <div className="accordion-body" style={{ cursor: "pointer" }} key={cate.id} value={cate.id} id={cate.id} onClick={() => this.filterCategory(cate.id)}>
-                                                {cate.category_name.toUpperCase()}
+                                                {/* {cate.category_name.toUpperCase()} */}
+                                                {this.capitalizeFirstLetter(cate.category_name)}
                                             </div>
                                         ))}
 
@@ -225,7 +226,8 @@ export default class Shop extends Component {
 
                                         {this.state.author.map(auth => (
                                             <div key={auth.id} style={{ cursor: "pointer" }} className="accordion-body" value={auth.id} id={auth.id} onClick={() => this.filterAuthor(auth.id)}>
-                                                {auth.author_name.toUpperCase()}
+                                                {/* {auth.author_name.toUpperCase()} */}
+                                                {this.capitalizeFirstLetter(auth.author_name)}
                                             </div>
                                         ))}
 
@@ -241,7 +243,8 @@ export default class Shop extends Component {
 
                                         {this.state.star.map(st => (
                                             <div key={st.id} style={{ cursor: "pointer" }} className="accordion-body" value={st.id} id={st.id} onClick={() => this.filterStar(st.id)}>
-                                                {st.des.toUpperCase()}
+                                                {st.des}
+                                                {/* {this.capitalizeFirstLetter(st.des)} */}
                                             </div>
                                         ))}
 
@@ -256,7 +259,7 @@ export default class Shop extends Component {
                                     <select id="sortch" className="custom-select" onChange={(e) => this.changeSort(e)}>
                                         <option value="sale">Sort By OnSale</option>
                                         <option value="popular">Sort By Popularity</option>
-                                        <option value="price-acs">Sort By Price: low to high</option>
+                                        <option value="price-asc">Sort By Price: low to high</option>
                                         <option value="price-desc">Sort By Price: hight to low</option>
                                     </select>
                                 </div>

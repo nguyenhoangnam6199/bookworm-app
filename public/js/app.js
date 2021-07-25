@@ -8310,9 +8310,15 @@ var Cart = /*#__PURE__*/function (_Component) {
                   break;
                 }
 
-                console.log('item not exist: ' + itemNameNotExist.join(' & '));
+                // alert('item not exist: ' + itemNameNotExist.join(' & '))
                 itemIdNotExist.map(function (item) {
                   return _this2.props.DeleteItemFromCart(item);
+                });
+                Swal.fire({
+                  icon: 'error',
+                  title: 'Oops...',
+                  text: 'item not exist: ' + itemNameNotExist.join(' & ') // footer: '<a href="">Why do I have this issue?</a>'
+
                 });
                 return _context.abrupt("return");
 
@@ -9024,7 +9030,7 @@ var HomePage = /*#__PURE__*/function (_Component) {
     value: function componentWillMount() {
       var _this2 = this;
 
-      axios__WEBPACK_IMPORTED_MODULE_2___default().get('http://127.0.0.1:8000/api/onSaleBook').then(function (res) {
+      axios__WEBPACK_IMPORTED_MODULE_2___default().get('/api/onSaleBook').then(function (res) {
         _this2.setState({
           onSale: res.data
         });
@@ -9033,7 +9039,7 @@ var HomePage = /*#__PURE__*/function (_Component) {
       })["catch"](function (error) {
         console.log(error);
       });
-      axios__WEBPACK_IMPORTED_MODULE_2___default().get('http://127.0.0.1:8000/api/recommandBook').then(function (res) {
+      axios__WEBPACK_IMPORTED_MODULE_2___default().get('/api/recommandBook').then(function (res) {
         _this2.setState({
           books: res.data
         });
@@ -9054,7 +9060,7 @@ var HomePage = /*#__PURE__*/function (_Component) {
             switch (_context.prev = _context.next) {
               case 0:
                 _context.next = 2;
-                return axios__WEBPACK_IMPORTED_MODULE_2___default().get("http://127.0.0.1:8000/api/popularBook").then(function (response) {
+                return axios__WEBPACK_IMPORTED_MODULE_2___default().get("/api/popularBook").then(function (response) {
                   _this3.setState({
                     books: response.data
                   });
@@ -9090,7 +9096,7 @@ var HomePage = /*#__PURE__*/function (_Component) {
           while (1) {
             switch (_context2.prev = _context2.next) {
               case 0:
-                axios__WEBPACK_IMPORTED_MODULE_2___default().get("http://127.0.0.1:8000/api/recommandBook").then(function (response) {
+                axios__WEBPACK_IMPORTED_MODULE_2___default().get("/api/recommandBook").then(function (response) {
                   _this4.setState({
                     books: response.data
                   });
@@ -10070,6 +10076,12 @@ var ProductDetail = /*#__PURE__*/function (_Component) {
 
       if (x > 8) {
         x = 8;
+        Swal.fire({
+          icon: 'error',
+          title: 'Oops...',
+          text: 'Max book is 8!' // footer: '<a href="">Why do I have this issue?</a>'
+
+        });
       }
 
       this.setState({
@@ -10083,6 +10095,12 @@ var ProductDetail = /*#__PURE__*/function (_Component) {
 
       if (x < 1) {
         x = 1;
+        Swal.fire({
+          icon: 'error',
+          title: 'Oops...',
+          text: 'Min book is 1!' // footer: '<a href="">Why do I have this issue?</a>'
+
+        });
       }
 
       this.setState({
@@ -10139,7 +10157,7 @@ var ProductDetail = /*#__PURE__*/function (_Component) {
                 this.setState({
                   quantity: 1
                 });
-                alert("Add Card Successfully !");
+                Swal.fire('Good job!', 'Add Cart Successfull !', 'success');
 
               case 4:
               case "end":
@@ -10188,21 +10206,23 @@ var ProductDetail = /*#__PURE__*/function (_Component) {
       };
 
       if (this.state.title.length > 120) {
-        alert("Max title is 120 character !");
+        //alert("Max title is 120 character !");
+        Swal.fire({
+          icon: 'error',
+          title: 'Oops...',
+          text: 'Max title is 120 character!' // footer: '<a href="">Why do I have this issue?</a>'
+
+        });
         e.preventDefault();
         return;
       } else {
         axios.post("/api/review/", x).then(function (res) {
           return console.log(res.data);
-        });
-        alert("Insert Review Successfull !");
-        this.FetchData1(), this.FetchData();
-      } // axios.post("/api/review/",x)
-      //     .then(res=>console.log(res.data));
-      //     alert("Insert Review Successfull !");
-      //     this.FetchData1(),
-      //     this.FetchData();
+        }); // alert("Insert Review Successfull !");
 
+        Swal.fire('Good job!', 'Insert Review Successfull !', 'success');
+        this.FetchData1(), this.FetchData();
+      }
     }
   }, {
     key: "toDateString",
@@ -10427,6 +10447,13 @@ var ProductDetail = /*#__PURE__*/function (_Component) {
             }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("br", {}), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("br", {}), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("hr", {}), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("br", {}), this.state.review.map(function (b) {
               return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)("div", {
                 children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)("h5", {
+                  style: {
+                    wordWrap: 'break-word',
+                    display: 'block',
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                    whiteSpace: 'nowrap'
+                  },
                   children: [b.review_title, " | ", _this4.state.star, " Star"]
                 }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("p", {
                   style: {
@@ -10680,7 +10707,7 @@ var Shop = /*#__PURE__*/function (_Component) {
           filter: this.state.filter,
           filterValue: this.state.filterValue,
           sort: this.state.sort,
-          isAscending: this.state.isAsc,
+          // isAscending: this.state.isAsc,
           per: this.state.per,
           page: this.state.page
         }
@@ -10834,15 +10861,16 @@ var Shop = /*#__PURE__*/function (_Component) {
             switch (_context5.prev = _context5.next) {
               case 0:
                 value = event.target.value;
-                _context5.next = 3;
+                console.log(value);
+                _context5.next = 4;
                 return this.setState({
                   sort: value
                 });
 
-              case 3:
+              case 4:
                 this.FetcData();
 
-              case 4:
+              case 5:
               case "end":
                 return _context5.stop();
             }
@@ -10927,7 +10955,7 @@ var Shop = /*#__PURE__*/function (_Component) {
           break;
       }
 
-      return "( Filter by ".concat(filter_name, " ").concat(filter_value, " )");
+      return "( Filter by ".concat(filter_name, ": ").concat(filter_value, " )");
     }
   }, {
     key: "render",
@@ -10994,7 +11022,7 @@ var Shop = /*#__PURE__*/function (_Component) {
                         onClick: function onClick() {
                           return _this5.filterCategory(cate.id);
                         },
-                        children: cate.category_name.toUpperCase()
+                        children: _this5.capitalizeFirstLetter(cate.category_name)
                       }, cate.id);
                     })
                   })]
@@ -11028,7 +11056,7 @@ var Shop = /*#__PURE__*/function (_Component) {
                         onClick: function onClick() {
                           return _this5.filterAuthor(auth.id);
                         },
-                        children: auth.author_name.toUpperCase()
+                        children: _this5.capitalizeFirstLetter(auth.author_name)
                       }, auth.id);
                     })
                   })]
@@ -11062,7 +11090,7 @@ var Shop = /*#__PURE__*/function (_Component) {
                         onClick: function onClick() {
                           return _this5.filterStar(st.id);
                         },
-                        children: st.des.toUpperCase()
+                        children: st.des
                       }, st.id);
                     })
                   })]
@@ -11090,7 +11118,7 @@ var Shop = /*#__PURE__*/function (_Component) {
                       value: "popular",
                       children: "Sort By Popularity"
                     }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("option", {
-                      value: "price-acs",
+                      value: "price-asc",
                       children: "Sort By Price: low to high"
                     }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("option", {
                       value: "price-desc",

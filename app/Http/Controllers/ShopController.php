@@ -10,38 +10,6 @@ use Carbon\Carbon;
 
 class ShopController extends Controller
 {
-    //Test paginate
-    function index($category)
-    {
-        $b = DB::table('books')
-            ->join('discounts', 'books.id', '=', 'discounts.book_id')
-            ->join('authors', 'books.author_id', '=', 'authors.id')
-            ->join('categories', 'books.category_id', '=', 'categories.id')
-            ->select(
-                'books.id',
-                'books.book_cover_photo',
-                'categories.category_name',
-                'books.book_title',
-                'books.book_price',
-                'authors.author_name',
-                'discounts.discount_price',
-                DB::raw('books.book_price - discounts.discount_price as sub_price'),
-                DB::raw('CASE WHEN (discounts.discount_price isnull) THEN books.book_price ELSE discounts.discount_price end  as final_price')
-            )
-            ->where('categories.id', $category)
-            ->where(function ($q) {
-                $q->where(function ($k) {
-                    $k->whereDate('discount_start_date', '<=', now()->toDateString())
-                        ->whereDate('discount_end_date', '>=', now()->toDateString());
-                })
-                    ->orwhere(function ($k) {
-                        $k->whereDate('discount_start_date', '<=', now()->toDateString())
-                            ->whereNull('discounts.discount_end_date');
-                    });
-            })
-            ->paginate(2);
-        return response()->json($b);
-    }
     //Lấy ra danh sách tên loại
     function getCategory()
     {
@@ -90,14 +58,14 @@ class ShopController extends Controller
         return response()->json($b);
     }
 
-    //Đếm tổng số lượng star của 1 sản phẩm có id tương ứng
+    //Đếm tổng số lượng comment của 1 sản phẩm có id tương ứng
     function sumStar($id)
     {
         $b = DB::table('books')
             ->join('reviews', 'books.id', '=', 'reviews.book_id')
             ->select(
                 'books.id',
-                DB::raw('sum(cast(reviews.rating_start as int)) as SumOfStar')
+                DB::raw('count(reviews.book_id) as SumOfStar')
             )
             ->where('books.id', $id)
             ->groupBy('books.id')
@@ -105,7 +73,7 @@ class ShopController extends Controller
         return response()->json($b);
     }
 
-    //Lọc theo 1 category
+    //Lọc theo 1 điều kiện nào đó
     function FilterBy(Request $request)
     {
         $filter = $request->filter;
@@ -134,7 +102,6 @@ class ShopController extends Controller
                     );
 
 
-        //Mac dinh trang shop
         switch ($filter) {
             case "category":
                 $query = $query->where('books.category_id', $filterValue);
@@ -154,10 +121,9 @@ class ShopController extends Controller
                     ->groupByRaw('authors.author_name')
                     ->groupByRaw('categories.category_name')
                     ->groupByRaw('discounts.discount_price')
-                    ->havingRaw('cast(avg(CAST (reviews.rating_start AS INT)) as int) = ?', [$filterValue]);
+                    ->havingRaw('cast(avg(CAST (reviews.rating_start AS INT)) as int) >= ?', [$filterValue]);
 
             default:
-                # code...
                 break;
         }
 
@@ -184,7 +150,6 @@ class ShopController extends Controller
             break;
         } 
 
-        // return $query->toSql();
         $books = $query->paginate($per);
         return response()->json($books);
     }

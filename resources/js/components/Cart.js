@@ -66,8 +66,14 @@ export class Cart extends Component {
             })
 
             if(itemIdNotExist.length > 0){
-                console.log('item not exist: ' + itemNameNotExist.join(' & '))
+               // alert('item not exist: ' + itemNameNotExist.join(' & '))
                 itemIdNotExist.map(item => this.props.DeleteItemFromCart(item));
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'item not exist: ' + itemNameNotExist.join(' & '),
+                    // footer: '<a href="">Why do I have this issue?</a>'
+                  })
                 return;
             }
         }

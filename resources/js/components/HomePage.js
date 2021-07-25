@@ -17,7 +17,7 @@ export default class HomePage extends Component {
     }
 
     componentWillMount() {
-        axios.get('http://127.0.0.1:8000/api/onSaleBook')
+        axios.get('/api/onSaleBook')
             .then(res => {
                 this.setState({
                     onSale: res.data
@@ -27,7 +27,7 @@ export default class HomePage extends Component {
             .catch((error) => {
                 console.log(error);
             });
-        axios.get('http://127.0.0.1:8000/api/recommandBook')
+        axios.get('/api/recommandBook')
             .then(res => {
                 this.setState({
                     books: res.data
@@ -39,7 +39,7 @@ export default class HomePage extends Component {
             });
     }
     async popularShow() {
-        await axios.get("http://127.0.0.1:8000/api/popularBook").then(response => {
+        await axios.get("/api/popularBook").then(response => {
             this.setState({ books: response.data });
             document.getElementById("popular").style.background = "grey";
             document.getElementById("recommend").style.background = "white";
@@ -47,7 +47,7 @@ export default class HomePage extends Component {
         }).catch(error => console.log(error));
     }
     async recommendShow() {
-        axios.get("http://127.0.0.1:8000/api/recommandBook").then(response => {
+        axios.get("/api/recommandBook").then(response => {
             this.setState({ books: response.data });
             document.getElementById("recommend").style.background = "grey";
             document.getElementById("popular").style.background = "white";

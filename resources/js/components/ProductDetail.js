@@ -143,6 +143,12 @@ export class ProductDetail extends Component {
         var x = this.state.quantity + 1;
         if(x>8){
             x=8;
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Max book is 8!',
+                // footer: '<a href="">Why do I have this issue?</a>'
+              })
         }
         this.setState({ quantity: x})
     }
@@ -151,6 +157,12 @@ export class ProductDetail extends Component {
         var x = this.state.quantity-1;
         if(x<1){
             x = 1;
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Min book is 1!',
+                // footer: '<a href="">Why do I have this issue?</a>'
+              })
         }
         this.setState({ quantity: x })
     }
@@ -172,7 +184,11 @@ export class ProductDetail extends Component {
             quantity: this.state.quantity
         })
         this.setState({ quantity: 1 })
-        alert("Add Card Successfully !");
+        Swal.fire(
+            'Good job!',
+            'Add Cart Successfull !',
+            'success'
+          )
     }
 
     Funct1(e){
@@ -208,22 +224,28 @@ export class ProductDetail extends Component {
             rating_start:this.state.stars
         };
         if(this.state.title.length>120){
-            alert("Max title is 120 character !");
-            e.preventDefault();
+            //alert("Max title is 120 character !");
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Max title is 120 character!',
+                // footer: '<a href="">Why do I have this issue?</a>'
+              })
+           e.preventDefault();
             return;
         }
         else{
             axios.post("/api/review/",x)
             .then(res=>console.log(res.data));
-            alert("Insert Review Successfull !");
+            // alert("Insert Review Successfull !");
+            Swal.fire(
+                'Good job!',
+                'Insert Review Successfull !',
+                'success'
+              )
             this.FetchData1(),
             this.FetchData();
         }
-        // axios.post("/api/review/",x)
-        //     .then(res=>console.log(res.data));
-        //     alert("Insert Review Successfull !");
-        //     this.FetchData1(),
-        //     this.FetchData();
     }
 
      toDateString(string) {
@@ -336,7 +358,7 @@ export class ProductDetail extends Component {
                                 <br />
                                 {this.state.review.map(b => (
                                     <div key={b.id}>
-                                        <h5>{b.review_title} | {this.state.star} Star</h5>
+                                        <h5 style={{ wordWrap: 'break-word', display: 'block', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{b.review_title} | {this.state.star} Star</h5>
                                         <p style={{ wordWrap: 'break-word', display: 'block', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{b.review_details}</p>
                                         <p>{this.toDateString(b.review_date)}</p>
                                         <hr />
