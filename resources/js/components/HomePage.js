@@ -92,7 +92,7 @@ export default class HomePage extends Component {
                                                 ? <del>${book.book_price}</del>
                                                 : ""
                                             }
-                                            <span>${book.final_price}</span>
+                                            <span style={{marginLeft: '10px', fontSize: '25px', color: 'red'}}>${book.final_price}</span>
                                         </li>
                                     </ul>
                                 </div>
@@ -133,7 +133,7 @@ export default class HomePage extends Component {
                                                             ? <del>${book.book_price}</del>
                                                             : ""
                                                         }
-                                                        ${book.final_price}
+                                                        <span style={{marginLeft: '10px', fontSize: '25px', color: 'red'}}>${book.final_price}</span>
                                                     </li>
                                                 </ul>
                                             </div>

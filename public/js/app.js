@@ -9207,6 +9207,11 @@ var HomePage = /*#__PURE__*/function (_Component) {
                       children: [book.book_price !== book.final_price ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)("del", {
                         children: ["$", book.book_price]
                       }) : "", /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)("span", {
+                        style: {
+                          marginLeft: '10px',
+                          fontSize: '25px',
+                          color: 'red'
+                        },
                         children: ["$", book.final_price]
                       })]
                     })
@@ -9299,7 +9304,14 @@ var HomePage = /*#__PURE__*/function (_Component) {
                             className: "list-group-item",
                             children: [book.book_price !== book.final_price ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)("del", {
                               children: ["$", book.book_price]
-                            }) : "", "$", book.final_price]
+                            }) : "", /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsxs)("span", {
+                              style: {
+                                marginLeft: '10px',
+                                fontSize: '25px',
+                                color: 'red'
+                              },
+                              children: ["$", book.final_price]
+                            })]
                           })
                         })]
                       }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_8__.jsx)("br", {})]
@@ -9836,6 +9848,7 @@ var ProductDetail = /*#__PURE__*/function (_Component) {
     _this.addToCart = _this.addToCart.bind(_assertThisInitialized(_this));
     _this.toDateString = _this.toDateString.bind(_assertThisInitialized(_this));
     _this.setPage = _this.setPage.bind(_assertThisInitialized(_this));
+    _this.capitalizeFirstLetter = _this.capitalizeFirstLetter.bind(_assertThisInitialized(_this));
     return _this;
   }
 
@@ -10231,7 +10244,7 @@ var ProductDetail = /*#__PURE__*/function (_Component) {
   }, {
     key: "onSubmit",
     value: function onSubmit(e) {
-      // e.preventDefault();
+      e.preventDefault();
       var x = {
         book_id: this.props.match.params.id,
         review_title: this.state.title,
@@ -10259,6 +10272,11 @@ var ProductDetail = /*#__PURE__*/function (_Component) {
       }
     }
   }, {
+    key: "capitalizeFirstLetter",
+    value: function capitalizeFirstLetter(string) {
+      return string.charAt(0).toUpperCase() + string.slice(1);
+    }
+  }, {
     key: "toDateString",
     value: function toDateString(string) {
       var date = new Date(string);
@@ -10283,7 +10301,7 @@ var ProductDetail = /*#__PURE__*/function (_Component) {
                 display: 'flex'
               },
               className: "title-page text-white",
-              children: Object.keys(this.state.book).length === 0 ? "N/A" : this.state.book.category.category_name
+              children: Object.keys(this.state.book).length === 0 ? "N/A" : this.capitalizeFirstLetter(this.state.book.category.category_name)
             })
           })
         }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("br", {}), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)("div", {
@@ -10350,7 +10368,9 @@ var ProductDetail = /*#__PURE__*/function (_Component) {
                 children: ["$", this.state.book.book_price]
               }) : "", /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)("span", {
                 style: {
-                  fontSize: '25px'
+                  marginLeft: '10px',
+                  fontSize: '25px',
+                  color: 'red'
                 },
                 children: ["$", this.state.book.final_price]
               }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("hr", {
@@ -10438,8 +10458,8 @@ var ProductDetail = /*#__PURE__*/function (_Component) {
                   onClick: function onClick() {
                     return _this4.FunctAll();
                   },
-                  children: ["total (", Object.keys(this.state.sumStar).length === 0 ? "N/A" : this.state.sumStar.sumofstar, ")"]
-                }), " |", this.state.numOfStar.map(function (b) {
+                  children: ["total (", Object.keys(this.state.sumStar).length === 0 ? "N/A" : this.state.sumStar.sumofstar, ") | "]
+                }), this.state.numOfStar.map(function (b) {
                   return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)("span", {
                     style: {
                       cursor: "pointer"
@@ -10448,7 +10468,9 @@ var ProductDetail = /*#__PURE__*/function (_Component) {
                       return _this4.FuncStar(b.rating_start);
                     },
                     id: b.rating_start,
-                    children: [b.rating_start, " star (", b.sl, ") |"]
+                    children: [b.rating_start, " star (", b.sl, ") | ", /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("span", {
+                      children: " "
+                    })]
                   }, b.rating_start);
                 })]
               }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)("div", {
@@ -10512,7 +10534,9 @@ var ProductDetail = /*#__PURE__*/function (_Component) {
                       textOverflow: 'ellipsis',
                       whiteSpace: 'nowrap'
                     },
-                    children: [b.review_title, " |", _this4.state.star === "0" ? b.rating_start : _this4.state.star, " Star"]
+                    children: [b.review_title, " | ", /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("span", {
+                      children: " "
+                    }), _this4.state.star === "0" ? b.rating_start : _this4.state.star, " Star"]
                   }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("p", {
                     style: {
                       wordWrap: 'break-word',
@@ -11259,7 +11283,14 @@ var Shop = /*#__PURE__*/function (_Component) {
                             className: "list-group-item",
                             children: [book.book_price !== book.final_price ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)("del", {
                               children: ["$", book.book_price]
-                            }) : "", "$", book.final_price]
+                            }) : "", /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)("span", {
+                              style: {
+                                marginLeft: '10px',
+                                fontSize: '25px',
+                                color: 'red'
+                              },
+                              children: ["$", book.final_price]
+                            })]
                           })
                         })]
                       }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("br", {})]

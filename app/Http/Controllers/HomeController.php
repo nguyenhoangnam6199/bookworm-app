@@ -17,6 +17,7 @@ class HomeController extends Controller
             ->join('authors','books.author_id','=','authors.id')
             ->select('books.id','books.book_cover_photo','books.book_title','books.book_price','authors.author_name','discounts.discount_price',
             DB::raw('books.book_price - discounts.discount_price as sub_price'),
+            // DB::raw('CASE WHEN (discounts.discount_price isnull) THEN books.book_price ELSE books.book_price - discounts.discount_price end as sub_price'),
             DB::raw('CASE WHEN (discounts.discount_price isnull) THEN books.book_price ELSE discounts.discount_price end  as final_price'))
             ->where(function($query) {
                 $query->whereDate('discount_start_date','<=', now()->toDateString())

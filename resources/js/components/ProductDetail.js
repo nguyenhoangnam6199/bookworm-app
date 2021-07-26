@@ -27,7 +27,7 @@ export class ProductDetail extends Component {
             detail: '',
             stars: 1
         }
-        this.FunctAll=this.FunctAll.bind(this);
+        this.FunctAll = this.FunctAll.bind(this);
         this.Funct1 = this.Funct1.bind(this);
         this.Funct2 = this.Funct2.bind(this);
         this.Funct3 = this.Funct3.bind(this);
@@ -40,6 +40,7 @@ export class ProductDetail extends Component {
         this.addToCart = this.addToCart.bind(this);
         this.toDateString = this.toDateString.bind(this);
         this.setPage = this.setPage.bind(this);
+        this.capitalizeFirstLetter=this.capitalizeFirstLetter.bind(this);
     }
     componentDidMount() {
         console.log(this.props.match.params.id)
@@ -172,17 +173,17 @@ export class ProductDetail extends Component {
         var x = document.getElementById(id).id;
         await this.setState(
             {
-                condition:'time',
+                condition: 'time',
                 star: x,
             }
         )
         this.FetchData();
     }
-    async FunctAll(){
-       await this.setState(
+    async FunctAll() {
+        await this.setState(
             {
-                condition:'time',
-                star:'0'
+                condition: 'time',
+                star: '0'
             }
         )
         this.setPage("1")
@@ -228,7 +229,7 @@ export class ProductDetail extends Component {
     }
 
     onSubmit(e) {
-       // e.preventDefault();
+        e.preventDefault();
         const x = {
             book_id: this.props.match.params.id,
             review_title: this.state.title,
@@ -256,8 +257,12 @@ export class ProductDetail extends Component {
                 'success'
             )
             this.FetchData1(),
-                this.FetchData();
+            this.FetchData();
         }
+    }
+
+    capitalizeFirstLetter(string) {
+        return string.charAt(0).toUpperCase() + string.slice(1);
     }
 
     toDateString(string) {
@@ -276,7 +281,7 @@ export class ProductDetail extends Component {
                     <div className="container">
                         <h2 style={{ display: 'flex' }} className="title-page text-white">
                             {/* {this.state.book.category.category_name} */}
-                            {Object.keys(this.state.book).length === 0 ? "N/A" : this.state.book.category.category_name}
+                            {Object.keys(this.state.book).length === 0 ? "N/A" : this.capitalizeFirstLetter(this.state.book.category.category_name)}
                         </h2>
                     </div>
                 </section>
@@ -311,7 +316,7 @@ export class ProductDetail extends Component {
                                 ? <del>${this.state.book.book_price}</del>
                                 : ""
                             }
-                            <span style={{ fontSize: '25px' }}>${this.state.book.final_price}</span>
+                            <span style={{ marginLeft: '10px',fontSize: '25px',color: 'red' }}>${this.state.book.final_price}</span>
                             <hr style={{ margin: 'auto' }} />
                             <br />
                             <br />
@@ -359,12 +364,12 @@ export class ProductDetail extends Component {
 
                                     {/* <h5>0 Star</h5> */}
                                     <p>
-                                        <span onClick={()=>this.FunctAll()}>total (
-                                        {Object.keys(this.state.sumStar).length === 0 ? "N/A" : this.state.sumStar.sumofstar}
-                                        )</span> |
+                                        <span onClick={() => this.FunctAll()}>total (
+                                            {Object.keys(this.state.sumStar).length === 0 ? "N/A" : this.state.sumStar.sumofstar}
+                                            ) | </span>
                                         {this.state.numOfStar.map(b => (
                                             <span style={{ cursor: "pointer" }} onClick={() => this.FuncStar(b.rating_start)} key={b.rating_start} id={b.rating_start}>
-                                                {b.rating_start} star ({b.sl}) |
+                                                {b.rating_start} star ({b.sl}) | <span> </span>
                                             </span>
                                         ))}
 
@@ -393,13 +398,13 @@ export class ProductDetail extends Component {
                                     {this.state.review.map(b => (
                                         <div key={b.id}>
                                             <h5 style={{ wordWrap: 'break-word', display: 'block', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                                                {b.review_title} |   
+                                                {b.review_title} | <span> </span>
                                                 {
-                                                (this.state.star==="0") 
-                                                ? b.rating_start
-                                                : (this.state.star)
+                                                    (this.state.star === "0")
+                                                        ? b.rating_start
+                                                        : (this.state.star)
                                                 } Star
-                                         </h5>
+                                            </h5>
                                             <p style={{ wordWrap: 'break-word', display: 'block', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{b.review_details}</p>
                                             <p>{this.toDateString(b.review_date)}</p>
                                             <hr />

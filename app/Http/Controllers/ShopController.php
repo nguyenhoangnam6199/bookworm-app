@@ -82,14 +82,14 @@ class ShopController extends Controller
         $per = $request->per;
 
         $query = Book::query()
-                    ->leftJoin('discounts', function ($join) {
+                   ->leftJoin('discounts', function ($join) {
                         $join->on('books.id', '=', 'discounts.book_id')
                             ->whereDate('discount_start_date', '<=', now())
                             ->where(function ($query) {
                                 $query->whereDate('discount_end_date', '>', now())
                                     ->orWhereNull('discount_end_date');
                             });
-                    })
+                    }) 
                     ->join('authors', 'books.author_id', '=', 'authors.id')
                     ->join('categories', 'books.category_id', '=', 'categories.id')
                     ->select(
