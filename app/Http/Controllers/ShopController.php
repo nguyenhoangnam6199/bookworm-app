@@ -37,7 +37,7 @@ class ShopController extends Controller
             ->with('reviews')
             ->selectFinalPrice()
             ->SelectAverageStar()
-            ->first(); 
+            ->first();
         return response()->json($book);
     }
 
@@ -82,31 +82,31 @@ class ShopController extends Controller
         $per = $request->per;
 
         $query = Book::query()
-                   ->leftJoin('discounts', function ($join) {
-                        $join->on('books.id', '=', 'discounts.book_id')
-                            ->whereDate('discount_start_date', '<=', now())
-                            ->where(function ($query) {
-                                $query->whereDate('discount_end_date', '>', now())
-                                    ->orWhereNull('discount_end_date');
-                            });
-                    }) 
-                    ->join('authors', 'books.author_id', '=', 'authors.id')
-                    ->join('categories', 'books.category_id', '=', 'categories.id')
-                    ->select(
-                        'books.*',
-                        'categories.category_name',
-                        'authors.author_name',
-                        'discounts.discount_price',
-                        DB::raw('(CASE WHEN discount_price IS NULL THEN 0 ELSE book_price - discount_price END) as sub_price'),
-                        DB::raw('CASE WHEN (discounts.discount_price IS NULL) THEN books.book_price ELSE discounts.discount_price end  as final_price')
-                    );
+            ->leftJoin('discounts', function ($join) {
+                $join->on('books.id', '=', 'discounts.book_id')
+                    ->whereDate('discount_start_date', '<=', now())
+                    ->where(function ($query) {
+                        $query->whereDate('discount_end_date', '>', now())
+                            ->orWhereNull('discount_end_date');
+                    });
+            })
+            ->join('authors', 'books.author_id', '=', 'authors.id')
+            ->join('categories', 'books.category_id', '=', 'categories.id')
+            ->select(
+                'books.*',
+                'categories.category_name',
+                'authors.author_name',
+                'discounts.discount_price',
+                DB::raw('(CASE WHEN discount_price IS NULL THEN 0 ELSE book_price - discount_price END) as sub_price'),
+                DB::raw('CASE WHEN (discounts.discount_price IS NULL) THEN books.book_price ELSE discounts.discount_price end  as final_price')
+            );
 
 
         switch ($filter) {
             case "category":
                 $query = $query->where('books.category_id', $filterValue);
                 break;
-            
+
             case "author":
                 $query = $query->where('books.author_id', $filterValue);
                 break;
@@ -129,34 +129,54 @@ class ShopController extends Controller
 
         switch ($sort) {
             case 'popular':
-                $query = $query
-                    ->withCount('reviews')
-                    ->orderByDesc('reviews_count')
-                    ->orderBy('final_price');
+                // $query = $query
+                //     ->withCount('reviews')
+                //     ->orderByDesc('reviews_count')
+                //     ->orderBy('final_price');
+                $query =  DB::table('books')
+                ->join('reviews', 'books.id','=','reviews.book_id')
+                ->join('authors', 'books.author_id','=','authors.id')
+                ->leftJoin('discounts','books.id','=','discounts.book_id')
+                ->select('books.id','books.book_cover_photo','books.book_title','authors.author_name','books.book_price',
+                DB::raw('CASE WHEN (discounts.discount_price isnull) THEN books.book_price ELSE discounts.discount_price end  as final_price'),
+                DB::raw('count(books.id) as num_review'))
+                ->where(function($query) {
+                    $query->whereDate('discount_start_date','<=', now()->toDateString())
+                          ->whereDate('discount_end_date','>=', now()->toDateString());
+                })
+                ->orWhere(function($query){
+                    $query->whereDate('discount_start_date','<=', now()->toDateString())
+                          ->whereNull('discounts.discount_end_date');
+                })
+                ->groupBy('final_price')
+                ->groupBy('books.id')
+                ->groupBy('authors.author_name')
+                ->orderByDesc('num_review')
+                ->orderBy('final_price');
                 break;
-                
+
             case 'price-asc':
                 $query = $query->orderBy('final_price');
                 break;
-                
+
             case 'price-desc':
                 $query = $query->orderByDesc('final_price');
                 break;
-            
+
             default: // onsale is default
                 $query = $query
-                ->orderByDesc('sub_price')
-                ->orderBy('final_price');
-            break;
-        } 
+                    ->orderByDesc('sub_price')
+                    ->orderBy('final_price');
+                break;
+        }
 
         $books = $query->paginate($per);
         return response()->json($books);
     }
 
-    function FilterReview($idBook, $idStar, $condition,$isAscending, $per)
+    function FilterReview($idBook, $idStar, $condition, $isAscending, $per)
     {
-        if($condition==="time"&&$idStar==="0"){
+        if ($condition === "time" && $idStar === "0") {
             $b = DB::table('books')
                 ->join('reviews', 'books.id', '=', 'reviews.book_id')
                 ->select(
@@ -174,16 +194,14 @@ class ShopController extends Controller
                     'reviews.review_date'
                 );
 
-                if($isAscending==="true"){
-                    $b=$b->orderBy('reviews.review_date')->paginate($per);
-                }
-                else{
-                    $b=$b->orderByDesc('reviews.review_date')->paginate($per);
-                }
-                // ->paginate($per);
+            if ($isAscending === "true") {
+                $b = $b->orderBy('reviews.review_date')->paginate($per);
+            } else {
+                $b = $b->orderByDesc('reviews.review_date')->paginate($per);
+            }
+            // ->paginate($per);
             return response()->json($b);
-        }
-        else if($condition==="time"){
+        } else if ($condition === "time") {
             $b = DB::table('books')
                 ->join('reviews', 'books.id', '=', 'reviews.book_id')
                 ->select(
@@ -202,19 +220,19 @@ class ShopController extends Controller
                     'reviews.rating_start'
                 );
 
-                if($isAscending==="true"){
-                    $b=$b->orderBy('reviews.review_date')->paginate($per);
-                }
-                else{
-                    $b=$b->orderByDesc('reviews.review_date')->paginate($per);
-                }
-                // ->paginate($per);
+            if ($isAscending === "true") {
+                $b = $b->orderBy('reviews.review_date')->paginate($per);
+            } else {
+                $b = $b->orderByDesc('reviews.review_date')->paginate($per);
+            }
+            // ->paginate($per);
             return response()->json($b);
         }
     }
 
-    function FilterAllReview($idBook, $condition,$isAscending, $per){
-        if($condition==="time"){
+    function FilterAllReview($idBook, $condition, $isAscending, $per)
+    {
+        if ($condition === "time") {
             $b = DB::table('books')
                 ->join('reviews', 'books.id', '=', 'reviews.book_id')
                 ->select(
@@ -232,13 +250,12 @@ class ShopController extends Controller
                     'reviews.rating_start'
                 );
 
-                if($isAscending==="true"){
-                    $b=$b->orderBy('reviews.review_date')->paginate($per);
-                }
-                else{
-                    $b=$b->orderByDesc('reviews.review_date')->paginate($per);
-                }
-                // ->paginate($per);
+            if ($isAscending === "true") {
+                $b = $b->orderBy('reviews.review_date')->paginate($per);
+            } else {
+                $b = $b->orderByDesc('reviews.review_date')->paginate($per);
+            }
+            // ->paginate($per);
             return response()->json($b);
         }
     }
